@@ -1,8 +1,11 @@
 import React, { useEffect, useState } from "react";
+import { ErrorInterface } from "../Utils/types";
 
-function useFetch(url) {
-  const [result, setResult] = useState(null);
-  const [error, setError] = useState(null);
+type Url = string;
+
+function useFetch<T>(url: Url) {
+  const [result, setResult] = useState<T | null>(null);
+  const [error, setError] = useState<ErrorInterface | null>(null);
   const [loading, setLoading] = useState(false);
 
   const fetchData = async () => {
@@ -24,7 +27,7 @@ function useFetch(url) {
       setLoading(false);
     } catch (error) {
       console.log(error);
-      setError(error);
+      setError(error as ErrorInterface);
       setLoading(false);
     }
   };

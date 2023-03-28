@@ -6,10 +6,10 @@ import getRndInt from "../Utils/getRndInt";
 type Props = {};
 
 export default function Start({}: Props) {
-  const { result, error, loading } = useFetch(
-    "https://restcountries.com/v3.1/independent?status=true"
-  );
-  const [country, setCountry] = React.useState<any>(null);
+  // const { result, error, loading } = useFetch(
+  //   "https://restcountries.com/v3.1/independent?status=true"
+  // );
+  // const [country, setCountry] = React.useState<any>(null);
   const location = useLocation();
   const linkStyle = {
     color: "red",
@@ -18,15 +18,15 @@ export default function Start({}: Props) {
     color: "blue",
   };
 
-  useEffect(() => {
-    if (result && result.length > 0) {
-      let random = getRndInt(0, result.length);
-      setCountry(result[random]);
-    }
-  }, [result]);
+  // useEffect(() => {
+  //   if (result && result.length > 0) {
+  //     let random = getRndInt(0, result.length);
+  //     setCountry(result[random]);
+  //   }
+  // }, [result]);
 
-  console.log(result);
-  console.log(country);
+  // console.log(result);
+  // console.log(country);
   return (
     <div>
       {/* <NavLink

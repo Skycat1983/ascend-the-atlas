@@ -1,11 +1,12 @@
 import { createContext, useState } from "react";
 import { User } from "../Utils/types";
-import { fakeAccount } from "../Utils/consts";
+import { fakeAccount, defaultContext } from "../Utils/consts";
+import { AuthContextProviderProps, AuthContextType } from "../Utils/types";
 
-export const AuthContext = createContext();
+export const AuthContext = createContext<AuthContextType>(defaultContext);
 
-export const AuthContextProvider = (props) => {
-  const [user, setUser] = useState<User>(null);
+export const AuthContextProvider = (props: AuthContextProviderProps) => {
+  const [user, setUser] = useState<User | null>(null);
 
   const logIn = () => {
     setUser(fakeAccount);
