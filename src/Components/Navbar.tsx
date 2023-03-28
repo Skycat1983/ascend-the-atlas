@@ -32,16 +32,16 @@ function NavBar() {
           <>
             -
             <NavLink
-              to="/start/sort"
+              to="/start/flags"
               style={({ isActive }) => (isActive ? linkStyle1 : linkStyle2)}
             >
-              sort
+              flags
             </NavLink>
             <NavLink
-              to="/start/rank"
+              to="/start/cities"
               style={({ isActive }) => (isActive ? linkStyle1 : linkStyle2)}
             >
-              rank
+              cities
             </NavLink>
           </>
         ) : null}

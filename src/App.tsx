@@ -5,23 +5,26 @@ import Home from "./pages/Home";
 import Start from "./pages/Start";
 import Navbar from "./Components/Navbar";
 import Item from "./pages/Item";
-import Sort from "./pages/Sort";
-import Rank from "./pages/Rank";
+import Flags from "./pages/Flags";
+import Cities from "./pages/Cities";
+import { AuthContextProvider } from "./Contexts/AuthContext";
 
 function App() {
   return (
     <>
-      <Navbar />
-      <Routes>
-        <Route path="/" element={<Home />} />
-        <Route path="*" element={<h1>404</h1>} />
-        <Route path="/start" element={<Start />}>
-          <Route path="sort" element={<Sort />} />
-          <Route path="rank" element={<Rank />} />
-        </Route>
-        {/* <Route path="/about" element={<About />} /> */}
-        <Route path="item/:id/:name" element={<Item />} />
-      </Routes>
+      <AuthContextProvider>
+        <Navbar />
+        <Routes>
+          <Route path="/" element={<Home />} />
+          <Route path="*" element={<h1>404</h1>} />
+          <Route path="/start" element={<Start />}>
+            <Route path="flags" element={<Flags />} />
+            <Route path="cities" element={<Cities />} />
+          </Route>
+          {/* <Route path="/about" element={<About />} /> */}
+          <Route path="item/:id/:name" element={<Item />} />
+        </Routes>
+      </AuthContextProvider>
     </>
   );
 }

@@ -3,7 +3,7 @@ import React from "react";
 type Props = {};
 
 function Sort({}: Props) {
-  return <div>Sort</div>;
+  return <div>Flags</div>;
 }
 
 export default Sort;

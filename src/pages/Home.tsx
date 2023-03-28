@@ -1,9 +1,13 @@
-import React from "react";
+import React, { useEffect } from "react";
 
 type Props = {};
 
 const Home = (props: Props) => {
-  return <div>Home</div>;
+  // const [data, setData] = React.useState<any>(null);
+
+  useEffect(() => {}, []);
+
+  return <div>Geography</div>;
 };
 
 export default Home;
