@@ -5,14 +5,14 @@ type ModalProps = {
   isOpen: boolean;
   closeModal: () => void;
   onModifierSelection: (modifier: string) => void;
-  possibleModifiers: any;
+  availableModifiers: any;
 };
 
 const Modal: React.FC<ModalProps> = ({
   isOpen,
   closeModal,
   onModifierSelection,
-  possibleModifiers,
+  availableModifiers,
 }) => {
   const handleOptionClick = (modifier: string) => {
     onModifierSelection(modifier);
@@ -33,7 +33,7 @@ const Modal: React.FC<ModalProps> = ({
             <button onClick={() => handleOptionClick("modifier2")}>
               Modifier 2
             </button> */}
-            {possibleModifiers.map((modifier: any, index: any) => (
+            {availableModifiers.map((modifier: any, index: any) => (
               <button key={index} onClick={() => handleOptionClick(modifier)}>
                 {modifier.name}
               </button>

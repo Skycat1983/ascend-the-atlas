@@ -68,10 +68,55 @@
 }
 
 .flag-rotate {
-  transform: rotate(45deg);
-  /* or any other angle */
+  transform: rotate(90deg);
+  /* this css will stretch the image to fit a horizontal recttangle shape */
 }
 
 .flag-greyscale {
   filter: grayscale(100%);
+}
+
+.mirror-horizontal {
+  position: relative;
+  overflow: hidden;
+}
+
+.mirror-horizontal::before {
+  content: "";
+  position: absolute;
+  left: 0;
+  top: 0;
+  width: 50%;
+  height: 100%;
+  background-image: inherit;
+  clip-path: polygon(0 0, 100% 0, 100% 100%, 0 100%);
+}
+
+.mirror-vertical {
+  position: relative;
+  overflow: hidden;
+}
+
+.mirror-vertical::before {
+  content: "";
+  position: absolute;
+  left: 0;
+  top: 0;
+  width: 100%;
+  height: 50%;
+  background-image: inherit;
+  clip-path: polygon(0 0, 100% 0, 100% 100%, 0 100%);
+}
+
+.progress-bar-container {
+  width: 100%;
+  height: 20px;
+  background-color: #f3f3f3;
+  border: 1px solid #bbb;
+}
+
+.progress-bar {
+  width: 100%;
+  height: 100%;
+  background-color: #4caf50;
 }

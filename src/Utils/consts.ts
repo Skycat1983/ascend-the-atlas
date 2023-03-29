@@ -9,6 +9,8 @@ import {
   mixUpLettersModifier,
   differentLanguageNameModifier,
   //! STATE
+  addAll,
+  addOneOption,
   addCaribbean,
   addSouthAmerica,
   addSouthernAfrica,
@@ -107,9 +109,9 @@ export const initialState = {
   availableCountries: [],
   unavailableCountries: [],
   isModalOpen: false,
-  modifierInterval: 2,
+  modifierInterval: 5,
   appliedModifiers: [],
-  possibleModifiers: [
+  availableModifiers: [
     //! flags
     upsideDownFlagModifier,
     flagDescription,
@@ -120,6 +122,8 @@ export const initialState = {
     mixUpLettersModifier,
     differentLanguageNameModifier,
     //! state
+    addAll,
+    addOneOption,
     // addCaribbean,
     // addSouthAmerica,
     // addSouthernAfrica,
@@ -138,19 +142,3 @@ export const initialState = {
     // addCentralAsia,
   ],
 };
-
-// export const initialState = {
-//   level: 1,
-//   score: 0,
-//   correctAnswers: [],
-//   displayed: null,
-//   countries: [],
-//   optionsCount: 2,
-//   isModalOpen: false,
-//   appliedModifiers: [],
-//   possibleModifiers: [
-//     showCapitalCityInsteadModifier,
-//     mixUpLettersModifier,
-//     differentLanguageNameModifier,
-//   ],
-// };

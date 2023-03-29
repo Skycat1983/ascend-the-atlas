@@ -2,25 +2,10 @@ import React from "react";
 
 //!---- these modifiers are for the flag ----!//
 
-// export const upsideDownFlagModifier = {
-//   name: "Southern Hemisphere",
-//   description: "The flag displayed has a chance to be upside down",
-//   target: "displayedCountry",
-//   apply: (country: any) => {
-//     const modifiedCountry = { ...country };
-//     if (Math.random() < 1 / 1) {
-//       console.log("Upside-down flag for", modifiedCountry.name.common);
-//       modifiedCountry.flip = true;
-//     } else {
-//       modifiedCountry.flip = false;
-//     }
-//     return modifiedCountry;
-//   },
-// };
-
 export const upsideDownFlagModifier = {
   name: "Southern Hemisphere",
   description: "The flag displayed has a chance to be upside down",
+  multiplier: 3,
   target: "displayedCountry",
   apply: (country: any) => {
     const modifiedCountry = { ...country };
@@ -41,14 +26,19 @@ export const upsideDownFlagModifier = {
 export const sidewaysFlagModifier = {
   name: "Portait",
   description: "The flag displayed has a chance to be sideways",
+  multiplier: 3,
+
   target: "displayedCountry",
   apply: (country: any) => {
     const modifiedCountry = { ...country };
     if (Math.random() < 1 / 1) {
+      if (!modifiedCountry.classname) {
+        modifiedCountry.classname = "";
+      }
       console.log("Upside-down flag for", modifiedCountry.name.common);
-      modifiedCountry.rotate = true;
-    } else {
-      modifiedCountry.rotate = false;
+      let cssTag = "flag-rotate";
+      modifiedCountry.classname += cssTag + " ";
+      console.log("modifiedCountry", modifiedCountry);
     }
     return modifiedCountry;
   },
@@ -57,14 +47,64 @@ export const sidewaysFlagModifier = {
 export const colourlessFlagModifier = {
   name: "Colourblind",
   description: "The flag displayed has a chance to be in black and white",
+  multiplier: 2,
+
   target: "displayedCountry",
   apply: (country: any) => {
     const modifiedCountry = { ...country };
     if (Math.random() < 1 / 1) {
+      if (!modifiedCountry.classname) {
+        modifiedCountry.classname = "";
+      }
+
       console.log("Upside-down flag for", modifiedCountry.name.common);
-      modifiedCountry.greyscale = true;
-    } else {
-      modifiedCountry.greyscale = false;
+      let cssTag = "flag-greyscale";
+      modifiedCountry.classname += cssTag + " ";
+      console.log("modifiedCountry", modifiedCountry);
+    }
+    return modifiedCountry;
+  },
+};
+
+export const mirrorHorizontalModifier = {
+  name: "Shard Slice",
+  description: "The flag displayed will be mirrored horizontally",
+  multiplier: 4,
+
+  target: "displayedCountry",
+  apply: (country: any) => {
+    const modifiedCountry = { ...country };
+    if (Math.random() < 1 / 1) {
+      if (!modifiedCountry.classname) {
+        modifiedCountry.classname = "";
+      }
+
+      console.log("Upside-down flag for", modifiedCountry.name.common);
+      let cssTag = "mirror-horizontal";
+      modifiedCountry.classname += cssTag + " ";
+      console.log("modifiedCountry", modifiedCountry);
+    }
+    return modifiedCountry;
+  },
+};
+
+export const mirrorVerticalModifier = {
+  name: "Shard Slash",
+  description: "The flag displayed will be mirrored vertically",
+  multiplier: 4,
+
+  target: "displayedCountry",
+  apply: (country: any) => {
+    const modifiedCountry = { ...country };
+    if (Math.random() < 1 / 1) {
+      if (!modifiedCountry.classname) {
+        modifiedCountry.classname = "";
+      }
+
+      console.log("Upside-down flag for", modifiedCountry.name.common);
+      let cssTag = "mirror-vertical";
+      modifiedCountry.classname += cssTag + " ";
+      console.log("modifiedCountry", modifiedCountry);
     }
     return modifiedCountry;
   },
@@ -96,6 +136,8 @@ export const flagDescription = {
 export const differentLanguageNameModifier = {
   name: "Phrasebook",
   descripotion: "The country name has a chance to be in a different language",
+  multiplier: 5,
+
   target: "displayedOptions",
   apply: (country: any) => {
     if (Math.random() < 1 / 20) {
@@ -125,6 +167,8 @@ function shuffleString(str: string): string {
 export const mixUpLettersModifier = {
   name: "Scrabble piece",
   description: "the country name has a chance to be mixed up",
+  multiplier: 3,
+
   target: "displayedOptions",
   apply: (country: any) => {
     if (Math.random() < 1 / 20) {
@@ -140,6 +184,8 @@ export const showCapitalCityInsteadModifier = {
   name: "Souvenir",
   description:
     "the country name has a chance to be replaced with the capital city",
+  multiplier: 5,
+
   target: "displayedOptions",
   apply: (country: any) => {
     if (Math.random() < 1 / 20) {
@@ -159,6 +205,8 @@ export const showCapitalCityInsteadModifier = {
 export const addAll = {
   name: "Globe",
   description: "add all countries to the multiple choice options",
+  multiplier: 10,
+
   target: "state",
   case: "SET_AVAILABLE_REGIONS",
   payload: (state: any) => state.unavailableRegions,
@@ -167,6 +215,8 @@ export const addAll = {
 export const addOneOption = {
   name: "Journal",
   description: "add an extra country to the multiple choice options",
+  multiplier: 3,
+
   target: "state",
   case: "SET_MULTIPLE_CHOICE_COUNT",
   payload: (state: any) => state.optionsCount + 1,
@@ -183,11 +233,13 @@ export const minusOneOption = {
 const createRegionModifier = (
   name: string,
   description: string,
+  // multiplier: number,
   region: string
   // multiplier: number
 ) => ({
   name,
   description,
+  multiplier: 3,
   target: "state",
   case: "SET_AVAILABLE_REGIONS",
   payload: (state: any) => [...state.availableRegions, region],
@@ -323,11 +375,3 @@ export const addNorthAmerica = createRegionModifier(
   "add North America countries to the multiple choice options",
   "North America"
 );
-
-// export const addOceana = {
-//   name: "Nautical Chart",
-//   description: "add Polynesia countries to the multiple choice options",
-//   target: "state",
-//   case: "SET_AVAILABLE_REGIONS",
-//   payload: (state: any) => [...state.availableRegions, "Polynesia"],
-// };

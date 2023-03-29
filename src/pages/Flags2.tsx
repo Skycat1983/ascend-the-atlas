@@ -1,4 +1,6 @@
-import React, { useEffect, useReducer, useState } from "react";
+//@ts-nocheck
+
+import React, { useEffect, useMemo, useReducer, useState } from "react";
 import useFetch from "../CustomHooks/useFetch";
 import getRndInt from "../Utils/getRndInt";
 import "../App.css";
@@ -13,32 +15,37 @@ const reducer = (state: any, action: any) => {
       return { ...state, level: action.payload };
     case "SET_SCORE":
       return { ...state, score: action.payload };
-    case "REMOVE_ANSWERS":
-      return { ...state, correctAnswers: action.payload };
-    case "SET_AVAILABLE_REGIONS":
-      return { ...state, regions: action.payload };
-    case "SET_DISPLAYED_FLAG":
-      return { ...state, displayed: action.payload };
+    case "SET_MULTIPLIER":
+      return { ...state, multiplier: action.payload };
+    case "SET_DISPLAYED_COUNTRY":
+      return { ...state, displayedCountry: action.payload };
     case "SET_MULTIPLE_CHOICE_OPTIONS":
-      return { ...state, countries: action.payload };
+      return { ...state, displayedOptions: action.payload };
     case "SET_MULTIPLE_CHOICE_COUNT":
       return { ...state, optionsCount: action.payload };
-    case "ADD_APPLIED_MODIFIER":
-      return {
-        ...state,
-        appliedModifiers: [...state.appliedModifiers, action.payload],
-      };
-
+    case "SET_AVAILABLE_REGIONS":
+      return { ...state, availableRegions: action.payload };
+    case "SET_UNAVAILABLE_REGIONS":
+      return { ...state, unavailableRegions: action.payload };
+    case "SET_AVAILABLE_COUNTRIES":
+      return { ...state, availableCountries: action.payload };
+    case "SET_UNAVAILABLE_COUNTRIES":
+      return { ...state, unavailableCountries: action.payload };
+    case "INCREMENT_NEW_MODIFIER_INTERVAL":
+      return { ...state, modifierInterval: action.payload };
     case "TOGGLE_MODAL":
       return {
         ...state,
         isModalOpen: action.payload,
         selectedModifiers: action.modifiers || [],
       };
-    case "SET_SELECTED_MODIFIER":
-      return { ...state, selectedModifiers: action.payload };
-    case "SWITCH_MODIFIER":
-      return { ...state, selectedModifiers: action.payload };
+    case "ADD_APPLIED_MODIFIER":
+      return {
+        ...state,
+        appliedModifiers: [...state.appliedModifiers, action.payload],
+      };
+    case "SET_POSSIBLE_MODIFIERS":
+      return { ...state, availableModifiers: action.payload };
     case "RESET":
       return initialState;
     default:
@@ -46,35 +53,67 @@ const reducer = (state: any, action: any) => {
   }
 };
 
-//! GETTING COUNTRIES
-// 1: check available regions
-// 2: loop through those regions and get countries where the code is not in the correctAnswers array
-
 function Flags() {
   const [state, dispatch] = useReducer(reducer, initialState);
-  const [region, setRegion] = useState("Europe");
   const { result, error, loading } = useFetch<any>(
     "https://restcountries.com/v3.1/independent?status=true&fields=area,capital,cca3,flags,independent,landlocked,languages,name,population,region,subregion,timezone,translations"
   );
 
-  console.log(result);
+  useMemo(() => {
+    if (result) {
+      let availableCountries: any[] = [];
+      // now we loop through the results and get the countries that are in the available regions
+      for (let i = 0; i < result.length; i++) {
+        if (state.availableRegions.includes(result[i].subregion)) {
+          availableCountries.push(result[i]);
+        }
+      }
+      let fileredCountries = availableCountries.filter(
+        (country) => !state.unavailableCountries.includes(country.cca3)
+      );
+      console.log("filteredCountries", fileredCountries);
+      dispatch({
+        type: "SET_AVAILABLE_COUNTRIES",
+        payload: fileredCountries,
+      });
+    }
+  }, [result, state.availableRegions, state.unavailableCountries]);
+
+  useEffect(() => {
+    console.log("test>>>");
+    // when the level increases we check to see if we need to trigger a modifier
+    if (state.level > 1 && (state.level - 1) % state.modifierInterval === 0) {
+      getNext();
+
+      dispatch({
+        type: "TOGGLE_MODAL",
+        payload: true,
+      });
+    } else {
+      getNext();
+    }
+  }, [state.level, state.modifierInterval]);
 
   const getNext = async () => {
     if (result) {
       let availableChoices: any[] = [];
-      const fetchCountries = async () => {
-        for (let i = 0; i < state.optionsCount; i++) {
-          console.count("counting:");
-          let random = getRndInt(0, result.length);
-          let country = result[random];
-          if (state.correctAnswers.includes(country.cca3)) {
-            i--;
-            continue;
-          }
-          availableChoices.push(country);
+      for (let i = 0; i < state.optionsCount; i++) {
+        let random = getRndInt(0, state.availableCountries.length);
+        let country = state.availableCountries[random];
+        // if the country is already in the unavailable countries array we will skip it
+        if (state.unavailableCountries.includes(country.cca3)) {
+          i--;
+          continue;
         }
-      };
-      await fetchCountries();
+        availableChoices.push(country);
+      }
+      // apply modifiers
+      availableChoices = availableChoices.map((country) => {
+        return state.appliedModifiers.reduce((acc: any, modifier: any) => {
+          return modifier.apply(acc);
+        }, country);
+      });
+
       dispatch({
         type: "SET_MULTIPLE_CHOICE_OPTIONS",
         payload: availableChoices,
@@ -83,7 +122,7 @@ function Flags() {
       let shownFlag = getRndInt(0, state.optionsCount - 1);
       console.log("shownFlag", shownFlag);
       dispatch({
-        type: "SET_DISPLAYED_FLAG",
+        type: "SET_DISPLAYED_COUNTRY",
         payload: availableChoices[shownFlag],
       });
     }
@@ -93,65 +132,69 @@ function Flags() {
     getNext();
   }, [result, state.optionsCount]);
 
-  useEffect(() => {
-    const eventInterval = 5;
-    if (state.level > 1 && (state.level - 1) % eventInterval === 0) {
-      console.log("Event triggered");
+  const handleClick = (e: any) => {
+    // correct answer given
+    if (e.target.innerText === state.displayedCountry.name.common) {
+      // remove the state.displayedCountry from the availableCountries array...
+      dispatch({
+        type: "SET_UNAVAILABLE_COUNTRIES",
+        payload: [...state.unavailableCountries, state.displayedCountry.cca3],
+      });
+      // ...and add it to the unavailableCountries array
+      dispatch({
+        type: "SET_AVAILABLE_COUNTRIES",
+        payload: state.availableCountries.filter(
+          (country: any) => country.cca3 !== state.displayedCountry.cca3
+        ),
+      });
+      // increase the score
+      dispatch({
+        type: "SET_SCORE",
+        payload: state.score * state.multiplier,
+      });
+      // increase the level
+      dispatch({ type: "INCREMENT_LEVEL", payload: state.level + 1 });
+    }
+    // wrong answer given
+    dispatch({ type: "RESET" });
+  };
+
+  const handleModifierSelection = async (modifier: any) => {
+    if (modifier.target === "state") {
+      const payload =
+        typeof modifier.payload === "function"
+          ? modifier.payload(state)
+          : modifier.payload;
+
+      dispatch({
+        type: modifier.case,
+        payload: payload,
+      });
+    } else {
       dispatch({
         type: "TOGGLE_MODAL",
         payload: true,
       });
-    } else {
-      getNext();
-    }
-  }, [state.level]);
-
-  const handleClick = (e: any) => {
-    if (e.target.innerText === state.displayed.name.common) {
-      // correct answer given
-      console.log("correct");
       dispatch({
-        type: "REMOVE_ANSWERS",
-        payload: [...state.correctAnswers, state.displayed.cca3],
+        type: "ADD_APPLIED_MODIFIER",
+        payload: modifier,
       });
-      if (state.displayed.continents[0] === "Europe") {
-        dispatch({ type: "SET_SCORE", payload: state.score + 4 });
-      } else {
-        dispatch({ type: "SET_SCORE", payload: state.score + 5 });
-      }
-      dispatch({ type: "INCREMENT_LEVEL", payload: state.level + 1 });
-    } else {
-      // wrong answer given
-      console.log("wrong");
-      dispatch({ type: "RESET" });
     }
-  };
-
-  const handleModifierSelection = async (modifier: any) => {
-    dispatch({
-      type: "SET_MULTIPLE_CHOICE_COUNT",
-      payload: state.optionsCount + 1,
-    });
-    dispatch({
-      type: "TOGGLE_MODAL",
-      payload: true,
-    });
-    dispatch({
-      type: "ADD_APPLIED_MODIFIER",
-      payload: modifier,
-    });
   };
 
   const applyModifiers = (country: any) => {
-    let modifiedCountry = { ...country };
-    state.appliedModifiers.forEach((modifier: any) => {
-      modifiedCountry = modifier.apply(modifiedCountry);
-    });
-    return modifiedCountry;
-  };
+    if (state.appliedModifiers.length > 0) {
+      console.log("we have modifiers for options");
 
-  // console.log(state.countries);
-  // console.log("state", state);
+      let modifiedCountry = { ...country };
+      state.appliedModifiers.forEach((modifier: any) => {
+        modifiedCountry = modifier.apply(modifiedCountry);
+      });
+      return modifiedCountry;
+    } else {
+      return country;
+    }
+  };
 
   return (
     <>
@@ -159,18 +202,18 @@ function Flags() {
         Level: {state.level} Score: {state.score}
       </div>
       <div className="flag-container">
-        {state.displayed && (
+        {state.displayedCountry && (
           <img
-            src={state.displayed.flags.png}
-            alt={state.displayed.name.common}
-            className={state.displayed.flip ? "flag-flip" : ""}
+            src={state.displayedCountry.flags.png}
+            alt={state.displayedCountry.name.common}
+            className={`${state.displayedCountry.classname}`}
           />
         )}
       </div>
 
       <div className="buttons-container">
-        {state.displayed &&
-          state.countries.map((country: any) => {
+        {state.displayedCountry &&
+          state.displayedOptions.map((country: any) => {
             const modifiedCountry = applyModifiers(country);
             return (
               <React.Fragment key={modifiedCountry.cca3}>

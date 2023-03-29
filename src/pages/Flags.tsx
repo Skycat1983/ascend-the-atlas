@@ -4,6 +4,7 @@ import getRndInt from "../Utils/getRndInt";
 import "../App.css";
 import { initialState } from "../Utils/consts";
 import Modal from "../Components/Modal";
+import { getProgressBarColor } from "../Utils/getProgressBarColor";
 
 //todo: split reducer into multiple reducers. perhaps gameState, gameVariables, gameModifiers, countryData, ModalState etc
 
@@ -43,27 +44,27 @@ const reducer = (state: any, action: any) => {
         appliedModifiers: [...state.appliedModifiers, action.payload],
       };
     case "SET_POSSIBLE_MODIFIERS":
-      return { ...state, possibleModifiers: action.payload };
+      return { ...state, availableModifiers: action.payload };
     case "RESET":
-      return initialState;
+      return {
+        // ...state,
+        ...initialState,
+      };
+
     default:
       return state;
   }
 };
 
-//! GETTING COUNTRIES
-// 1: check available regions
-// 2: loop through those regions and get countries where the code is not in the correctAnswers array
-
 function Flags() {
   const [state, dispatch] = useReducer(reducer, initialState);
+  const [progressBarWidth, setProgressBarWidth] = useState("0%");
   const { result, error, loading } = useFetch<any>(
     "https://restcountries.com/v3.1/independent?status=true&fields=area,capital,cca3,flags,independent,landlocked,languages,name,population,region,subregion,timezone,translations"
   );
 
   useMemo(() => {
     if (result) {
-      console.log(state.availableRegions);
       let availableCountries: any[] = [];
       // now we loop through the results and get the countries that are in the available regions
       for (let i = 0; i < result.length; i++) {
@@ -83,14 +84,19 @@ function Flags() {
   }, [result, state.availableRegions, state.unavailableCountries]);
 
   useEffect(() => {
-    // const eventInterval = 5;
     if (state.level > 1 && (state.level - 1) % state.modifierInterval === 0) {
       console.log("Event triggered");
+      getNext();
+
       dispatch({
         type: "TOGGLE_MODAL",
         payload: true,
       });
+      setProgressBarWidth("0%");
     } else {
+      const progress =
+        ((state.level - 1) % state.modifierInterval) / state.modifierInterval;
+      setProgressBarWidth(progress * 100 + "%"); // Add the percentage sign here
       getNext();
     }
   }, [state.level, state.modifierInterval]);
@@ -98,19 +104,24 @@ function Flags() {
   const getNext = async () => {
     if (result) {
       let availableChoices: any[] = [];
-      const fetchCountries = async () => {
-        for (let i = 0; i < state.optionsCount; i++) {
-          console.count("counting:");
-          let random = getRndInt(0, state.availableCountries.length);
-          let country = state.availableCountries[random];
-          if (state.unavailableCountries.includes(country.cca3)) {
-            i--;
-            continue;
-          }
+      for (let i = 0; i < state.optionsCount; i++) {
+        let random = getRndInt(0, state.availableCountries.length);
+        let country = state.availableCountries[random];
+        // if the country is already in the unavailable countries array we will skip it
+        if (country && !state.unavailableCountries.includes(country.cca3)) {
           availableChoices.push(country);
+        } else {
+          i--;
+          continue;
         }
-      };
-      await fetchCountries();
+      }
+      // apply modifiers
+      availableChoices = availableChoices.map((country) => {
+        return state.appliedModifiers.reduce((acc: any, modifier: any) => {
+          return modifier.apply(acc);
+        }, country);
+      });
+
       dispatch({
         type: "SET_MULTIPLE_CHOICE_OPTIONS",
         payload: availableChoices,
@@ -146,12 +157,16 @@ function Flags() {
         ),
       });
       // increase the score
-      dispatch({ type: "SET_SCORE", payload: state.score * state.multiplier });
+      dispatch({
+        type: "SET_SCORE",
+        payload: (state.score + 3) * state.multiplier,
+      });
       // increase the level
       dispatch({ type: "INCREMENT_LEVEL", payload: state.level + 1 });
     } else {
       // wrong answer given
       dispatch({ type: "RESET" });
+      getNext();
     }
   };
 
@@ -161,7 +176,6 @@ function Flags() {
         typeof modifier.payload === "function"
           ? modifier.payload(state)
           : modifier.payload;
-
       dispatch({
         type: modifier.case,
         payload: payload,
@@ -171,15 +185,20 @@ function Flags() {
         type: "TOGGLE_MODAL",
         payload: true,
       });
+
       dispatch({
         type: "ADD_APPLIED_MODIFIER",
         payload: modifier,
       });
     }
+    dispatch({
+      type: "SET_MULTIPLIER",
+      payload: state.multiplier + modifier.multiplier,
+    });
   };
 
   const applyModifiers = (country: any) => {
-    console.warn(country, state.appliedModifiers);
+    // console.warn(country, state.appliedModifiers);
     if (state.appliedModifiers.length > 0) {
       console.log("we have modifiers for options");
 
@@ -193,55 +212,53 @@ function Flags() {
     }
   };
 
-  // const applyFlagModifiers = () => {
-  //   let flagClass = "";
-  //   state.appliedModifiers.forEach((modifier: any) => {
-  //     if (modifier.target === "displayedCountry") {
-  //       flagClass += modifier.className;
-  //     }
-  //   });
-  //   return flagClass;
-  // };
-
-  // console.log(state);
-
   return (
     <>
       <div>
         Level: {state.level} Score: {state.score}
       </div>
+      <div className="progress-bar-container">
+        <div
+          className="progress-bar"
+          style={{
+            width: progressBarWidth,
+            backgroundColor: getProgressBarColor(
+              (((state.level - 1) % state.modifierInterval) /
+                state.modifierInterval) *
+                100
+            ),
+          }}
+        />
+      </div>
+
       <div className="flag-container">
         {state.displayedCountry && (
           <img
             src={state.displayedCountry.flags.png}
             alt={state.displayedCountry.name.common}
-            className={`${applyModifiers(state.displayedCountry)}`}
-            // className={`flag ${
-            //   state.displayedCountry.flip ? "flag-flip" : ""
-            // } ${state.displayedCountry.rotate ? "flag-rotate" : ""} ${
-            //   state.displayedCountry.greyScale ? "flag-greyscale" : ""
-            // }`}
+            className={`${state.displayedCountry.classname}`}
           />
         )}
       </div>
 
       <div className="buttons-container">
         {state.displayedCountry &&
-          state.displayedOptions.map((country: any) => {
+          state.displayedOptions.map((country: any, index: number) => {
             const modifiedCountry = applyModifiers(country);
             return (
-              <React.Fragment key={modifiedCountry.cca3}>
+              <React.Fragment key={`${modifiedCountry.cca3}-${index}`}>
                 <button className="country-button" onClick={handleClick}>
                   {modifiedCountry.name.common}
                 </button>
               </React.Fragment>
             );
           })}
+
         <Modal
           isOpen={state.isModalOpen}
           closeModal={() => dispatch({ type: "TOGGLE_MODAL", payload: false })}
           onModifierSelection={handleModifierSelection}
-          possibleModifiers={state.possibleModifiers}
+          availableModifiers={state.availableModifiers}
         />
       </div>
     </>
@@ -249,70 +266,3 @@ function Flags() {
 }
 
 export default Flags;
-
-// const applyModifiers = (country: any) => {
-//   console.warn(country, state.appliedModifiers);
-//   if (state.appliedModifiers.target === "displayedOptions") {
-//     console.log("we have modifiers for options");
-
-//     let modifiedCountry = { ...country };
-//     state.appliedModifiers.forEach((modifier: any) => {
-//       modifiedCountry = modifier.apply(modifiedCountry);
-//     });
-//     return modifiedCountry;
-//   } else if (state.appliedModifiers.target === "displayedCountry") {
-//     console.log("we have modifiers for target");
-
-//     // let modifiedCountry = { ...country };
-
-//     // state.appliedModifiers.forEach((modifier: any) => {
-//     //   flagClass += modifier.className;
-//     // });
-//     // return modifiedCountry;
-//     let flagClass = "";
-//     state.appliedModifiers.forEach((modifier: any) => {
-//       flagClass += modifier.className;
-//     });
-//     console.log("flagClass", flagClass);
-//     return flagClass;
-//   }
-//   return country; // Add this line to return the original country object when there are no applied modifiers
-// };
-
-//!----
-
-// const handleModifierSelection = async (modifier: any) => {
-//   if (modifier.target === "displayedOptions") {
-//     // dispatch({
-//     //   type: "SET_MULTIPLE_CHOICE_COUNT",
-//     //   payload: state.optionsCount + 1,
-//     // });
-//     dispatch({
-//       type: "TOGGLE_MODAL",
-//       payload: true,
-//     });
-//     dispatch({
-//       type: "ADD_APPLIED_MODIFIER",
-//       payload: modifier,
-//     });
-//   } else if (modifier.target === "state") {
-//     const payload =
-//       typeof modifier.payload === "function"
-//         ? modifier.payload(state)
-//         : modifier.payload;
-
-//     dispatch({
-//       type: modifier.case,
-//       payload: payload,
-//     });
-//   } else if (modifier.target === "displayedCountry") {
-//     dispatch({
-//       type: "TOGGLE_MODAL",
-//       payload: true,
-//     });
-//     dispatch({
-//       type: "ADD_APPLIED_MODIFIER",
-//       payload: modifier,
-//     });
-//   }
-// };
