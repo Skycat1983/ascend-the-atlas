@@ -1,6 +1,20 @@
 GEOGRAPHY ROGUELIKE
 every 5 guesses it gets harder
 
+_option mods_ affect the multiple choices
+
+- language of the given country
+- random language
+-
+
+_flag mods_ affect the flag classname
+
+_state mods_ affect state variables
+
+- add multiple choice option
+- add none of the above option
+-
+
 trade offs:
 
 - remove 1 country option, gain 1 country option for next two rounds

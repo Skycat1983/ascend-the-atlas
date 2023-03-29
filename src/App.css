@@ -62,3 +62,16 @@
   justify-content: center;
   width: 100%;
 }
+
+.flag-flip {
+  transform: scaleY(-1);
+}
+
+.flag-rotate {
+  transform: rotate(45deg);
+  /* or any other angle */
+}
+
+.flag-greyscale {
+  filter: grayscale(100%);
+}

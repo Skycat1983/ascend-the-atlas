@@ -8,6 +8,8 @@ function useFetch<T>(url: Url) {
   const [error, setError] = useState<ErrorInterface | null>(null);
   const [loading, setLoading] = useState(false);
 
+  // console.log(result);
+
   const fetchData = async () => {
     setLoading(true);
     try {
@@ -18,12 +20,6 @@ function useFetch<T>(url: Url) {
       } else {
         setResult(results);
       }
-      // if (check === "sc") {
-      //   setResult(resultx);
-      // }
-      // if (check === "mc") {
-      //   setResult(resultx.results);
-      // }
       setLoading(false);
     } catch (error) {
       console.log(error);
