@@ -47,12 +47,13 @@ FormProps) => {
     e.preventDefault();
     console.log("EVENT", e);
     if (location.pathname === "/signup") {
+      console.log("should sign up");
+
       signUp(state.email, state.password);
-    } else {
+    } else if (location.pathname === "/login") {
+      console.log("should log in");
       logIn(state.email, state.password);
     }
-
-    signUp(state.email, state.password);
   };
 
   console.log("state", state);

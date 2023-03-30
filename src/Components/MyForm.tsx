@@ -18,7 +18,7 @@ function Form({}: Props) {
   // we will get the location from the router, and then we will pass it to the useForm hook
 
   console.log(state);
-
+  console.log("location", location);
   return (
     <div
       style={{

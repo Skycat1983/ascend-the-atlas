@@ -1,11 +1,11 @@
 //@ts-nocheck
-
 import React, { useEffect, useMemo, useReducer, useState } from "react";
 import useFetch from "../CustomHooks/useFetch";
 import getRndInt from "../Utils/getRndInt";
 import "../App.css";
 import { initialState } from "../Utils/consts";
 import Modal from "../Components/Modal";
+import { getProgressBarColor } from "../Utils/getProgressBarColor";
 
 //todo: split reducer into multiple reducers. perhaps gameState, gameVariables, gameModifiers, countryData, ModalState etc
 
@@ -46,8 +46,19 @@ const reducer = (state: any, action: any) => {
       };
     case "SET_POSSIBLE_MODIFIERS":
       return { ...state, availableModifiers: action.payload };
+    case "REMOVE_MODIFIER":
+      const newModifiers = state.availableModifiers.filter(
+        (modifier: any) => modifier !== action.payload
+      );
+      return { ...state, availableModifiers: newModifiers };
+    case "SET_RELICS":
+      return { ...state, relics: action.payload };
     case "RESET":
-      return initialState;
+      return {
+        // ...state,
+        ...initialState,
+      };
+
     default:
       return state;
   }
@@ -55,6 +66,7 @@ const reducer = (state: any, action: any) => {
 
 function Flags() {
   const [state, dispatch] = useReducer(reducer, initialState);
+  const [progressBarWidth, setProgressBarWidth] = useState("0%");
   const { result, error, loading } = useFetch<any>(
     "https://restcountries.com/v3.1/independent?status=true&fields=area,capital,cca3,flags,independent,landlocked,languages,name,population,region,subregion,timezone,translations"
   );
@@ -80,16 +92,19 @@ function Flags() {
   }, [result, state.availableRegions, state.unavailableCountries]);
 
   useEffect(() => {
-    console.log("test>>>");
-    // when the level increases we check to see if we need to trigger a modifier
     if (state.level > 1 && (state.level - 1) % state.modifierInterval === 0) {
+      console.log("Event triggered");
       getNext();
 
       dispatch({
         type: "TOGGLE_MODAL",
         payload: true,
       });
+      setProgressBarWidth("0%");
     } else {
+      const progress =
+        ((state.level - 1) % state.modifierInterval) / state.modifierInterval;
+      setProgressBarWidth(progress * 100 + "%"); // Add the percentage sign here
       getNext();
     }
   }, [state.level, state.modifierInterval]);
@@ -101,11 +116,12 @@ function Flags() {
         let random = getRndInt(0, state.availableCountries.length);
         let country = state.availableCountries[random];
         // if the country is already in the unavailable countries array we will skip it
-        if (state.unavailableCountries.includes(country.cca3)) {
+        if (country && !state.unavailableCountries.includes(country.cca3)) {
+          availableChoices.push(country);
+        } else {
           i--;
           continue;
         }
-        availableChoices.push(country);
       }
       // apply modifiers
       availableChoices = availableChoices.map((country) => {
@@ -150,13 +166,15 @@ function Flags() {
       // increase the score
       dispatch({
         type: "SET_SCORE",
-        payload: state.score * state.multiplier,
+        payload: (state.score + 3) * state.multiplier,
       });
       // increase the level
       dispatch({ type: "INCREMENT_LEVEL", payload: state.level + 1 });
+    } else {
+      // wrong answer given
+      dispatch({ type: "RESET" });
+      getNext();
     }
-    // wrong answer given
-    dispatch({ type: "RESET" });
   };
 
   const handleModifierSelection = async (modifier: any) => {
@@ -165,7 +183,6 @@ function Flags() {
         typeof modifier.payload === "function"
           ? modifier.payload(state)
           : modifier.payload;
-
       dispatch({
         type: modifier.case,
         payload: payload,
@@ -175,14 +192,28 @@ function Flags() {
         type: "TOGGLE_MODAL",
         payload: true,
       });
+
       dispatch({
         type: "ADD_APPLIED_MODIFIER",
         payload: modifier,
       });
     }
+    dispatch({
+      type: "SET_MULTIPLIER",
+      payload: state.multiplier + modifier.multiplier,
+    });
+    dispatch({
+      type: "SET_RELICS",
+      payload: [...state.relics, modifier.url],
+    });
+    dispatch({
+      type: "REMOVE_MODIFIER",
+      payload: modifier,
+    });
   };
 
   const applyModifiers = (country: any) => {
+    // console.warn(country, state.appliedModifiers);
     if (state.appliedModifiers.length > 0) {
       console.log("we have modifiers for options");
 
@@ -192,7 +223,7 @@ function Flags() {
       });
       return modifiedCountry;
     } else {
-      return country;
+      return country; // Add this line to return the original country object when there are no applied modifiers
     }
   };
 
@@ -201,6 +232,26 @@ function Flags() {
       <div>
         Level: {state.level} Score: {state.score}
       </div>
+      <div className="relic-container">
+        {state.relics.map((relic: any, index: number) => {
+          return <img src={relic} alt="relic" key={index} className="relic" />;
+        })}
+      </div>
+
+      <div className="progress-bar-container">
+        <div
+          className="progress-bar"
+          style={{
+            width: progressBarWidth,
+            backgroundColor: getProgressBarColor(
+              (((state.level - 1) % state.modifierInterval) /
+                state.modifierInterval) *
+                100
+            ),
+          }}
+        />
+      </div>
+
       <div className="flag-container">
         {state.displayedCountry && (
           <img
@@ -213,21 +264,22 @@ function Flags() {
 
       <div className="buttons-container">
         {state.displayedCountry &&
-          state.displayedOptions.map((country: any) => {
+          state.displayedOptions.map((country: any, index: number) => {
             const modifiedCountry = applyModifiers(country);
             return (
-              <React.Fragment key={modifiedCountry.cca3}>
+              <React.Fragment key={`${modifiedCountry.cca3}-${index}`}>
                 <button className="country-button" onClick={handleClick}>
                   {modifiedCountry.name.common}
                 </button>
               </React.Fragment>
             );
           })}
+
         <Modal
           isOpen={state.isModalOpen}
           closeModal={() => dispatch({ type: "TOGGLE_MODAL", payload: false })}
           onModifierSelection={handleModifierSelection}
-          possibleModifiers={state.possibleModifiers}
+          availableModifiers={state.availableModifiers}
         />
       </div>
     </>

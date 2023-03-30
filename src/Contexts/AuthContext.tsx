@@ -1,9 +1,8 @@
 import { createContext, useEffect, useState } from "react";
 import { User } from "../Utils/types";
-import { fakeAccount, defaultContext } from "../Utils/consts";
+import { defaultContext } from "../Utils/consts";
 import { AuthContextProviderProps, AuthContextType } from "../Utils/types";
 import { auth } from "../config";
-
 import {
   createUserWithEmailAndPassword,
   signInWithEmailAndPassword,

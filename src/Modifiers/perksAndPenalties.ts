@@ -2,6 +2,20 @@ import React from "react";
 
 //!---- these modifiers are for the flag ----!//
 
+// extra life
+export const extraLifeModifier = {
+  name: "Extra Life",
+  description: "The player has an extra life, but multiplier is halved",
+  multiplier: 0.5,
+  url: "https://img.icons8.com/emoji/512/heart-suit.png",
+  target: "state",
+  apply: (state: any) => {
+    const modifiedState = { ...state };
+    modifiedState.lives += 1;
+    return modifiedState;
+  },
+};
+
 export const upsideDownFlagModifier = {
   name: "Southern Hemisphere",
   description: "The flag displayed has a chance to be upside down",
@@ -14,7 +28,6 @@ export const upsideDownFlagModifier = {
       if (!modifiedCountry.classname) {
         modifiedCountry.classname = "";
       }
-
       console.log("Upside-down flag for", modifiedCountry.name.common);
       let cssTag = "flag-flip";
       modifiedCountry.classname += cssTag + " ";
