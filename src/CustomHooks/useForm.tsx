@@ -1,6 +1,5 @@
-// this is a custom hook that handles form state and validation
-
-import { useState } from "react";
+import { useContext, useState } from "react";
+import { AuthContext } from "../Contexts/AuthContext";
 
 type FormState = {
   [key: string]: string;
@@ -17,10 +16,18 @@ type FormValidation = {
 type FormProps = {
   initialFormState: FormState;
   validation: FormValidation;
-  onSubmit: (state: FormState) => void;
+  location: any;
+  // onSubmit: (state: FormState) => void;
 };
 
-const useForm = ({ initialFormState, validation, onSubmit }: FormProps) => {
+const useForm = ({
+  initialFormState,
+  validation,
+  location,
+}: // onSubmit
+FormProps) => {
+  const { signUp, logIn } = useContext(AuthContext);
+
   const [state, setState] = useState<FormState>(initialFormState);
   const [errors, setErrors] = useState<FormErrors>({});
 
@@ -34,19 +41,21 @@ const useForm = ({ initialFormState, validation, onSubmit }: FormProps) => {
   const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const { name, value } = e.target;
     setState((state) => ({ ...state, [name]: value }));
-    // const { name, value } = e.target;
-    // validate(name, value);
-    // setState((state) => ({ ...state, [name]: value }));
   };
 
   const handleSubmit = (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
     console.log("EVENT", e);
-    // const { name, value } = e.target;
-    // validate(name, value);
+    if (location.pathname === "/signup") {
+      signUp(state.email, state.password);
+    } else {
+      logIn(state.email, state.password);
+    }
 
-    onSubmit(state);
+    signUp(state.email, state.password);
   };
+
+  console.log("state", state);
 
   return { state, errors, handleChange, handleSubmit, validate };
 };

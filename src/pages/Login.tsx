@@ -1,5 +1,5 @@
 import React from "react";
-import Form from "../Components/Form";
+import Form from "../Components/MyForm";
 import useForm from "../CustomHooks/useForm";
 import { initialFormState } from "../Utils/consts";
 

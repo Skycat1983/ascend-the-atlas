@@ -6,8 +6,9 @@ export interface AuthContextProviderProps {
 
 export interface AuthContextType {
   user: User | null;
-  logIn: () => void;
+  logIn: (email: string, password: string) => void;
   logOut: () => void;
+  signUp: (email: string, password: string) => void;
 }
 
 export interface ErrorInterface {
@@ -15,8 +16,8 @@ export interface ErrorInterface {
 }
 
 export type User = {
-  email: string;
-  username: string;
+  email: string | null;
+  // username: string;
 };
 
 export type FormState = {

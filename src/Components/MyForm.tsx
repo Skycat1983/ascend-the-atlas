@@ -1,15 +1,21 @@
-import React from "react";
+import React, { useContext } from "react";
 import useForm from "../CustomHooks/useForm";
 import { initialFormState, validation, onSubmit } from "../Utils/consts";
+import { AuthContext } from "../Contexts/AuthContext";
+import { useLocation } from "react-router-dom";
 
 type Props = {};
 
 function Form({}: Props) {
+  // const { signUp, logIn } = useContext(AuthContext);
+  let location = useLocation();
+
   const { state, errors, handleChange, handleSubmit, validate } = useForm({
     initialFormState,
     validation,
-    onSubmit,
+    location,
   });
+  // we will get the location from the router, and then we will pass it to the useForm hook
 
   console.log(state);
 

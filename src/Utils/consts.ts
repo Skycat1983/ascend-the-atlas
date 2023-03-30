@@ -40,6 +40,7 @@ export const defaultContext = {
   user: null,
   logIn: () => {},
   logOut: () => {},
+  signUp: (email: string, password: string) => {},
 };
 
 export const allSubregions = [
@@ -167,5 +168,6 @@ export const validation = {
 };
 
 export const onSubmit = (state: from.FormState) => {
+  // signUp(state.email, state.password);
   console.log(state);
 };
