@@ -46,6 +46,18 @@ function NavBar() {
           </>
         ) : null}
       </div>
+      <NavLink
+        to="/login"
+        style={({ isActive }) => (isActive ? linkStyle1 : linkStyle2)}
+      >
+        Login
+      </NavLink>
+      <NavLink
+        to="/signup"
+        style={({ isActive }) => (isActive ? linkStyle1 : linkStyle2)}
+      >
+        Signup
+      </NavLink>
     </div>
   );
 }

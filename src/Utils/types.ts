@@ -18,3 +18,15 @@ export type User = {
   email: string;
   username: string;
 };
+
+export type FormState = {
+  [key: string]: string;
+};
+
+export type FormErrors = {
+  [key: string]: string;
+};
+
+export type FormValidation = {
+  [key: string]: (value: string) => string;
+};

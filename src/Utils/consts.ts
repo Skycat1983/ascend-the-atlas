@@ -1,3 +1,5 @@
+import * as from from "./types";
+
 import {
   //! FLAGS
   upsideDownFlagModifier,
@@ -109,7 +111,8 @@ export const initialState = {
   availableCountries: [],
   unavailableCountries: [],
   isModalOpen: false,
-  modifierInterval: 5,
+  relics: [],
+  modifierInterval: 2,
   appliedModifiers: [],
   availableModifiers: [
     //! flags
@@ -141,4 +144,28 @@ export const initialState = {
     // addMicronesia,
     // addCentralAsia,
   ],
+};
+
+export const initialFormState = {
+  email: "",
+  password: "",
+};
+
+export const validation = {
+  email: (value: string) => {
+    if (!value) {
+      return "Email is required";
+    }
+    return "";
+  },
+  password: (value: string) => {
+    if (!value) {
+      return "Password is required";
+    }
+    return "";
+  },
+};
+
+export const onSubmit = (state: from.FormState) => {
+  console.log(state);
 };

@@ -8,6 +8,8 @@ import Item from "./pages/Item";
 import Flags from "./pages/Flags";
 import Cities from "./pages/Cities";
 import { AuthContextProvider } from "./Contexts/AuthContext";
+import Login from "./pages/Login";
+import Signup from "./pages/Signup";
 
 function App() {
   return (
@@ -22,7 +24,9 @@ function App() {
             <Route path="cities" element={<Cities />} />
           </Route>
           {/* <Route path="/about" element={<About />} /> */}
-          <Route path="item/:id/:name" element={<Item />} />
+          {/* <Route path="item/:id/:name" element={<Item />} /> */}
+          <Route path="login" element={<Login />} />
+          <Route path="signup" element={<Signup />} />
         </Routes>
       </AuthContextProvider>
     </>

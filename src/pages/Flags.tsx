@@ -45,6 +45,13 @@ const reducer = (state: any, action: any) => {
       };
     case "SET_POSSIBLE_MODIFIERS":
       return { ...state, availableModifiers: action.payload };
+    case "REMOVE_MODIFIER":
+      const newModifiers = state.availableModifiers.filter(
+        (modifier: any) => modifier !== action.payload
+      );
+      return { ...state, availableModifiers: newModifiers };
+    case "SET_RELICS":
+      return { ...state, relics: action.payload };
     case "RESET":
       return {
         // ...state,
@@ -137,7 +144,6 @@ function Flags() {
   };
 
   useEffect(() => {
-    // init();
     getNext();
   }, [result, state.optionsCount]);
 
@@ -195,6 +201,14 @@ function Flags() {
       type: "SET_MULTIPLIER",
       payload: state.multiplier + modifier.multiplier,
     });
+    dispatch({
+      type: "SET_RELICS",
+      payload: [...state.relics, modifier.url],
+    });
+    dispatch({
+      type: "REMOVE_MODIFIER",
+      payload: modifier,
+    });
   };
 
   const applyModifiers = (country: any) => {
@@ -217,6 +231,12 @@ function Flags() {
       <div>
         Level: {state.level} Score: {state.score}
       </div>
+      <div className="relic-container">
+        {state.relics.map((relic: any, index: number) => {
+          return <img src={relic} alt="relic" key={index} className="relic" />;
+        })}
+      </div>
+
       <div className="progress-bar-container">
         <div
           className="progress-bar"

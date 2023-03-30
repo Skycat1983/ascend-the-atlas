@@ -26,17 +26,27 @@ const Modal: React.FC<ModalProps> = ({
       {isOpen && (
         <div className="modal-backdrop">
           <div className="modal">
-            {/* Render modifier options */}
-            {/* <button onClick={() => handleOptionClick("modifier1")}>
-              Modifier 1
-            </button>
-            <button onClick={() => handleOptionClick("modifier2")}>
-              Modifier 2
-            </button> */}
+            <p>Choose a relic..</p>
             {availableModifiers.map((modifier: any, index: any) => (
-              <button key={index} onClick={() => handleOptionClick(modifier)}>
-                {modifier.name}
-              </button>
+              <>
+                {/* <div> */}
+                <button
+                  className={
+                    modifier.target === "displayedCountry"
+                      ? "relic-button-rare"
+                      : modifier.target === "displayedOptions"
+                      ? "relic-button-uncommon"
+                      : "relic-button-common"
+                  }
+                  data-tooltip={modifier.description}
+                  key={index}
+                  onClick={() => handleOptionClick(modifier)}
+                >
+                  <img className="relic" src={modifier.url} alt="test"></img>
+                  {modifier.name}
+                </button>
+                {/* </div> */}
+              </>
             ))}
             {/* Close button */}
             {/* <button onClick={closeModal}>Close</button> */}

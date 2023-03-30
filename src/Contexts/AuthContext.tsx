@@ -2,6 +2,7 @@ import { createContext, useState } from "react";
 import { User } from "../Utils/types";
 import { fakeAccount, defaultContext } from "../Utils/consts";
 import { AuthContextProviderProps, AuthContextType } from "../Utils/types";
+import { auth } from "../config";
 
 export const AuthContext = createContext<AuthContextType>(defaultContext);
 
