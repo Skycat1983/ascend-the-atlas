@@ -31,6 +31,8 @@ import {
   addCentralAsia,
 } from "../Modifiers/perksAndPenalties";
 
+export const defaultFetch =
+  "https://restcountries.com/v3.1/independent?status=true&fields=area,capital,cca3,flags,independent,landlocked,languages,name,population,region,subregion,timezone,translations";
 export const fakeAccount = {
   email: "heron@email.com",
   username: "heron",
@@ -101,50 +103,63 @@ export const initUnavailableRegions = [
 ];
 
 export const initialState = {
-  level: 1,
-  score: 0,
-  multiplier: 1,
-  displayedCountry: null,
-  displayedOptions: [],
-  optionsCount: 2,
-  availableRegions: initAvailableRegions,
-  unavailableRegions: initUnavailableRegions,
-  availableCountries: [],
-  unavailableCountries: [],
-  isModalOpen: false,
-  relics: [],
-  modifierInterval: 2,
-  appliedModifiers: [],
-  availableModifiers: [
-    //! flags
-    upsideDownFlagModifier,
-    flagDescription,
-    sidewaysFlagModifier,
-    colourlessFlagModifier,
-    //! options
-    showCapitalCityInsteadModifier,
-    mixUpLettersModifier,
-    differentLanguageNameModifier,
-    //! state
-    addAll,
-    addOneOption,
-    // addCaribbean,
-    // addSouthAmerica,
-    // addSouthernAfrica,
-    // addWesternAfrica,
-    // addMelanesia,
-    // addPolynesia,
-    // addWesternAsia,
-    // addSouthernAsia,
-    // addCentralAmerica,
-    // addSoutheastAsia,
-    // addNorthernAfrica,
-    // addEasternAfrica,
-    // addMiddleAfrica,
-    // addEasternAsia,
-    // addMicronesia,
-    // addCentralAsia,
-  ],
+  gameVariables: {
+    multiplier: 1,
+    displayedCount: 2,
+    modifierInterval: 2,
+  },
+  gameData: {
+    availableRegions: initAvailableRegions,
+    unavailableRegions: initUnavailableRegions,
+    availableCountries: [],
+    unavailableCountries: [],
+    fetchResult: null,
+  },
+  gameDisplay: {
+    displayedCountry: null,
+    displayedOptions: [],
+    displayedModifiers: [],
+  },
+  gameModifiers: {
+    appliedModifiers: [],
+    availableModifiers: [
+      //! flags
+      upsideDownFlagModifier,
+      flagDescription,
+      sidewaysFlagModifier,
+      colourlessFlagModifier,
+      //! options
+      showCapitalCityInsteadModifier,
+      mixUpLettersModifier,
+      differentLanguageNameModifier,
+      //! state
+      addAll,
+      addOneOption,
+      // addCaribbean,
+      // addSouthAmerica,
+      // addSouthernAfrica,
+      // addWesternAfrica,
+      // addMelanesia,
+      // addPolynesia,
+      // addWesternAsia,
+      // addSouthernAsia,
+      // addCentralAmerica,
+      // addSoutheastAsia,
+      // addNorthernAfrica,
+      // addEasternAfrica,
+      // addMiddleAfrica,
+      // addEasternAsia,
+      // addMicronesia,
+      // addCentralAsia,
+    ],
+  },
+  gameState: {
+    level: 1,
+    score: 0,
+    progressBarWidth: null,
+    // isModalOpen: false,
+    // relics: [],
+  },
 };
 
 export const initialFormState = {

@@ -5,7 +5,7 @@ export const gameVariablesReducer = (state: any, action: any) => {
     case "SET_MULTIPLIER":
       return { ...state, multiplier: action.payload };
     case "SET_MULTIPLE_CHOICE_COUNT":
-      return { ...state, optionsCount: action.payload };
+      return { ...state, displayedCount: action.payload };
     case "SET_MODIFIER_INTERVAL":
       return { ...state, modifierInterval: action.payload };
     case "RESET":
