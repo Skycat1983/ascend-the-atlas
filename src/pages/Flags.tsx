@@ -4,17 +4,20 @@ import "../App.css";
 import { initialState, defaultFetch } from "../Utils/consts";
 import Modal from "../Components/Modal";
 import { getProgressBarColor } from "../Utils/getProgressBarColor";
-import { gameStateReducer } from "../reducers/gameStateReducer";
-import { gameVariablesReducer } from "../reducers/gameVariablesReducer";
-import { gameModifiersReducer } from "../reducers/gameModifiersReducer";
-import { gameDisplayReducer } from "../reducers/gameDisplayReducer";
-import { gameDataReducer } from "../reducers/gameDataReducer";
+import { gameStateReducer } from "../reducers/gameReducer";
+import { gameVariablesReducer } from "../reducers/variablesReducer";
+import { gameModifiersReducer } from "../reducers/modifiersReducer";
+import { gameDisplayReducer } from "../reducers/displayReducer";
+import { gameDataReducer } from "../reducers/dataReducer";
+import { fetchReducer } from "../reducers/fetchReducer";
+import { setData } from "../helpers/setData";
 import { setAvailableCountries } from "../helpers/setAvailableCountries";
 import { setDataAvailability } from "../helpers/setDataAvailability";
 import { shiftDataAvailability } from "../helpers/shiftDataAvailability";
 import { setDisplayedOptions } from "../helpers/setDisplayedOptions";
 import { setDisplayedCountry } from "../helpers/setDisplayedCountry";
 import ProgressBar from "../Components/ProgressBar/ProgressBar";
+import { useRef } from "react";
 
 // this takes an object of reducers and returns a reducer that can call and handle each of them
 function combineReducers(reducers: any) {
@@ -29,6 +32,7 @@ function combineReducers(reducers: any) {
 
 // this is the root reducer that will be passed to the useReducer hook
 const rootReducer = combineReducers({
+  fetchState: fetchReducer,
   gameState: gameStateReducer,
   gameVariables: gameVariablesReducer,
   gameModifiers: gameModifiersReducer,
@@ -37,36 +41,72 @@ const rootReducer = combineReducers({
 });
 
 function Flags() {
+  // the reducer state with all its deconstructed values below
   const [state, dispatch] = useReducer(rootReducer, initialState);
-  // const [progressBarWidth, setProgressBarWidth] = useState("0%");
-  const { result, error, loading } = useFetch<any>(defaultFetch);
-  const { gameState, gameDisplay, gameData, gameModifiers, gameVariables } =
-    state;
+  const [isBoolean, setIsBoolean] = useState(false);
+  const {
+    gameState,
+    gameDisplay,
+    gameData,
+    gameModifiers,
+    gameVariables,
+    fetchState,
+  } = state;
+  const { result, error, loading } = fetchState;
   const { level, score, progressBarWidth } = gameState;
-  const { displayedCountry, displayedOptions } = gameDisplay;
+  const { displayedCountry, displayedOptions, displayedModifiers } =
+    gameDisplay;
+  const { multiplier, displayedCount, modifierInterval } = gameVariables;
+  const {
+    availableCountries,
+    availableRegions,
+    unavailableCountries,
+    unavailableRegions,
+  } = gameData;
+  const { availableModifiers, appliedModifiers } = gameModifiers;
+  // todo: modal
 
   useEffect(() => {
-    if (result) {
-      setAvailableCountries(result, state, dispatch);
-      // console.log("state :>> ", state);
-      setDisplayedOptions(state, dispatch);
-      // console.warn("STATE", state);
-      setDisplayedCountry(state, dispatch);
-      // shiftDataAvailability(state, dispatch);
+    setData(defaultFetch, dispatch);
+  }, []);
+
+  useEffect(() => {
+    if (result && result.length > 0) {
+      const next = async () => {
+        await setAvailableCountries(state, dispatch);
+        await setDisplayedOptions(state, dispatch);
+        await setDisplayedCountry(state, dispatch);
+        await shiftDataAvailability(displayedCountry, dispatch);
+
+        await console.warn(
+          // "fetchstate :>> ",
+          // state.fetchState,
+          "gamestate :>> ",
+          state.gameState,
+          "gamedisplay :>> ",
+          state.gameDisplay,
+          "gamedata :>> ",
+          state.gameData
+          // "gamemodifiers :>> ",
+          // state.gameModifiers,
+          // "gamevariables :>> ",
+          // state.gameVariables
+        );
+      };
+      next();
     }
   }, [result]);
-  console.log(
-    "gamestate :>> ",
-    state.gameState,
-    "gamedisplay :>> ",
-    state.gameDisplay,
-    "gamedata :>> ",
-    state.gameData,
-    "gamemodifiers :>> ",
-    state.gameModifiers,
-    "gamevariables :>> ",
-    state.gameVariables
-  );
+
+  // useEffect(() => {
+  //   const reconfig = async () => {
+  //     if (result && result.length > 0) {
+  //       await setAvailableCountries(state, dispatch);
+  //     }
+  //   };
+  //   reconfig();
+  // }, [availableRegions]);
+
+  // console.log("state :>> ", state);
 
   return (
     <>
@@ -107,6 +147,8 @@ function Flags() {
 }
 
 export default Flags;
+// const [progressBarWidth, setProgressBarWidth] = useState("0%");
+// const { result, error, loading } = useFetch<any>(defaultFetch);
 
 {
   /* <div className="relic-container">

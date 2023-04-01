@@ -160,6 +160,11 @@ export const initialState = {
     // isModalOpen: false,
     // relics: [],
   },
+  fetchState: {
+    result: null,
+    errors: null,
+    loading: false,
+  },
 };
 
 export const initialFormState = {

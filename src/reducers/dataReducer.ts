@@ -2,8 +2,6 @@ import { initialState } from "../Utils/consts";
 
 export const gameDataReducer = (state: any, action: any) => {
   switch (action.type) {
-    case "SET_FETCH_RESULT":
-      return { ...state, fetchResult: action.payload };
     case "SET_AVAILABLE_REGIONS":
       return { ...state, availableRegions: action.payload };
     case "SET_UNAVAILABLE_REGIONS":
