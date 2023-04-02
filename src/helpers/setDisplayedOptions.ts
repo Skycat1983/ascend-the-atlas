@@ -4,30 +4,32 @@ import getRndInt from "../Utils/getRndInt";
 export const setDisplayedOptions = (
   state: any,
   dispatch: any
-): Promise<void> => {
+): Promise<any[]> => {
   return new Promise((resolve) => {
     const { availableCountries } = state.gameData;
     const { displayedCount } = state.gameVariables;
+    console.log("availableCountries :>> ", availableCountries);
+    console.log("displayedCount :>> ", displayedCount);
 
-    let displayedChoices: any[] = [];
+    let displayedOptions: any[] = [];
     for (let i = 0; i < displayedCount; i++) {
       let random = getRndInt(0, availableCountries.length);
       let country = availableCountries[random];
-      // if the country is already in the unavailable countries array we will skip it
-      // if (country && !unavailableCountries.includes(country.cca3)) {
-      displayedChoices.push(country);
-      // } else {
-      //   i--;
-      //   continue;
-      // }
+      displayedOptions.push(country);
     }
-    console.log("displayedChoices :>> ", displayedChoices);
+
+    console.log(
+      "displayedOptions in set displayedOptions:>> ",
+      displayedOptions
+    );
+
     // Dispatch action to update the state
     dispatch({
       type: "SET_DISPLAYED_OPTIONS",
-      payload: displayedChoices,
+      payload: displayedOptions,
     });
-    resolve();
+    resolve(displayedOptions);
+    // resolve();
   });
 };
 

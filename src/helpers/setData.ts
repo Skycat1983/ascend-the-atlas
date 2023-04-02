@@ -1,9 +1,9 @@
 export const setData = async (url: any, dispatch: any) => {
-  console.log("url :>> ", url);
+  // console.log("url :>> ", url);
   try {
     const response = await fetch(url);
     const results = await response.json();
-    console.log("results :>> ", results);
+    // console.log("results :>> ", results);
     if (results.error) {
       dispatch({
         type: "SET_ERROR",

@@ -102,7 +102,40 @@ export const initUnavailableRegions = [
   "Central Asia",
 ];
 
-export const initialState = {
+export const initialNullState = {
+  fetchState: {
+    result: null,
+    error: null,
+    loading: null,
+  },
+  gameState: {
+    level: null,
+    score: null,
+    progressBarWidth: null,
+  },
+  gameDisplay: {
+    displayedCountry: null,
+    displayedOptions: null,
+    displayedModifiers: null,
+  },
+  gameData: {
+    availableCountries: null,
+    availableRegions: null,
+    unavailableCountries: null,
+    unavailableRegions: null,
+  },
+  gameModifiers: {
+    availableModifiers: null,
+    appliedModifiers: null,
+  },
+  gameVariables: {
+    multiplier: null,
+    displayedCount: null,
+    modifierInterval: null,
+  },
+};
+
+export const testState = {
   gameVariables: {
     multiplier: 1,
     displayedCount: 2,

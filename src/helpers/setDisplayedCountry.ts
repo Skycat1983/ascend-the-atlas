@@ -8,13 +8,23 @@ export const setDisplayedCountry = (
   return new Promise((resolve) => {
     const { displayedCount } = state.gameVariables;
     const { displayedOptions } = state.gameDisplay;
+    // console.warn(
+    //   "displayedCount, displayedOptions :>> ",
+    //   displayedCount,
+    //   displayedOptions
+    // );
+    // console.log("state :>> ", state);
 
     let chosenCountry = getRndInt(0, displayedCount - 1);
-    console.log("shownFlag", chosenCountry);
+    console.log(
+      "displayedOptions[chosenCountry] :>> ",
+      displayedOptions[chosenCountry]
+    );
     dispatch({
       type: "SET_DISPLAYED_COUNTRY",
       payload: displayedOptions[chosenCountry],
     });
+    // resolve();
     resolve(displayedOptions[chosenCountry]);
   });
 };

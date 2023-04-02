@@ -1,7 +1,7 @@
 import React, { useEffect, useMemo, useReducer, useState } from "react";
-import useFetch from "../CustomHooks/useFetch";
+import "@total-typescript/ts-reset";
 import "../App.css";
-import { initialState, defaultFetch } from "../Utils/consts";
+import { testState, initialNullState, defaultFetch } from "../Utils/consts";
 import Modal from "../Components/Modal";
 import { getProgressBarColor } from "../Utils/getProgressBarColor";
 import { gameStateReducer } from "../reducers/gameReducer";
@@ -13,11 +13,11 @@ import { fetchReducer } from "../reducers/fetchReducer";
 import { setData } from "../helpers/setData";
 import { setAvailableCountries } from "../helpers/setAvailableCountries";
 import { setDataAvailability } from "../helpers/setDataAvailability";
-import { shiftDataAvailability } from "../helpers/shiftDataAvailability";
+import { reconfigAvailability } from "../helpers/reconfigAvailability";
 import { setDisplayedOptions } from "../helpers/setDisplayedOptions";
 import { setDisplayedCountry } from "../helpers/setDisplayedCountry";
 import ProgressBar from "../Components/ProgressBar/ProgressBar";
-import { useRef } from "react";
+import { ReducerState } from "../Utils/interfaces";
 
 // this takes an object of reducers and returns a reducer that can call and handle each of them
 function combineReducers(reducers: any) {
@@ -26,7 +26,7 @@ function combineReducers(reducers: any) {
     for (const key in reducers) {
       nextState[key] = reducers[key](state[key], action);
     }
-    return nextState;
+    return nextState as ReducerState;
   };
 }
 
@@ -42,8 +42,8 @@ const rootReducer = combineReducers({
 
 function Flags() {
   // the reducer state with all its deconstructed values below
-  const [state, dispatch] = useReducer(rootReducer, initialState);
-  const [isBoolean, setIsBoolean] = useState(false);
+  const [state, dispatch] = useReducer(rootReducer, initialNullState);
+  const [gameReady, setGameReady] = useState(false);
   const {
     gameState,
     gameDisplay,
@@ -66,54 +66,101 @@ function Flags() {
   const { availableModifiers, appliedModifiers } = gameModifiers;
   // todo: modal
 
+  // fetch data fron API
   useEffect(() => {
-    setData(defaultFetch, dispatch);
+    const init = async () => {
+      await setData(defaultFetch, dispatch);
+      dispatch({ type: "INITIALISE_STATE", payload: testState });
+    };
+    init();
   }, []);
 
+  // set available countries after initialisation, and after change of availableRegions
   useEffect(() => {
+    console.log(result);
     if (result && result.length > 0) {
-      const next = async () => {
+      const calibrate = async () => {
         await setAvailableCountries(state, dispatch);
-        await setDisplayedOptions(state, dispatch);
-        await setDisplayedCountry(state, dispatch);
-        await shiftDataAvailability(displayedCountry, dispatch);
+        setGameReady(true);
+      };
+      calibrate();
+      setGameReady(true);
+    }
 
-        await console.warn(
-          // "fetchstate :>> ",
-          // state.fetchState,
-          "gamestate :>> ",
-          state.gameState,
-          "gamedisplay :>> ",
-          state.gameDisplay,
-          "gamedata :>> ",
-          state.gameData
-          // "gamemodifiers :>> ",
-          // state.gameModifiers,
-          // "gamevariables :>> ",
-          // state.gameVariables
+    return () => {
+      setGameReady(false);
+    };
+  }, [result, availableRegions]);
+
+  useEffect(() => {
+    if (gameReady) {
+      const getNext = async () => {
+        const getDisplayOptions = await setDisplayedOptions(state, dispatch);
+        const getDisplayCountry = await setDisplayedCountry(
+          {
+            ...state,
+            gameDisplay: {
+              ...state.gameDisplay,
+              displayedOptions: getDisplayOptions,
+            },
+          },
+          dispatch
+        );
+        await reconfigAvailability(
+          {
+            ...state,
+            gameDisplay: {
+              ...state.gameDisplay,
+              displayedCountry: getDisplayCountry,
+            },
+          },
+          dispatch
         );
       };
-      next();
+      getNext();
     }
-  }, [result]);
+  }, [gameReady]);
 
-  // useEffect(() => {
-  //   const reconfig = async () => {
-  //     if (result && result.length > 0) {
-  //       await setAvailableCountries(state, dispatch);
-  //     }
-  //   };
-  //   reconfig();
-  // }, [availableRegions]);
+  const handleClick = (e: any) => {
+    setGameReady(false);
+    // correct answer given
+    if (e.target.innerText === displayedCountry.name.common) {
+      dispatch({
+        type: "SET_SCORE",
+        payload: (score + 3) * multiplier,
+      });
+      // increase the level
+      dispatch({ type: "INCREMENT_LEVEL", payload: level + 1 });
+    } else {
+      // wrong answer given
+      dispatch({ type: "INITIALISE_STATE", payload: testState });
+    }
+  };
 
-  // console.log("state :>> ", state);
+  useEffect(() => {
+    console.log("displayedCountry :>> ", displayedCountry);
+    // console.warn(
+    //   // "fetchstate :>> ",
+    //   // state.fetchState,
+    //   "gamestate :>> ",
+    //   state.gameState,
+    //   "gamedisplay :>> ",
+    //   state.gameDisplay,
+    //   "gamedata :>> ",
+    //   state.gameData
+    //   // "gamemodifiers :>> ",
+    //   // state.gameModifiers,
+    //   // "gamevariables :>> ",
+    //   // state.gameVariables
+    // );
+  }, [displayedCountry]);
 
   return (
     <>
       <div>
         Level: {level} Score: {score}
       </div>
-      {state.gameState.progressBarWidth && (
+      {progressBarWidth && (
         <ProgressBar
           progressBarWidth={progressBarWidth}
           interval={state.gameVariables.modifierInterval}
@@ -137,7 +184,9 @@ function Flags() {
             // const modifiedCountry = applyModifiers(country);
             return (
               <>
-                <button>{displayedOptions[index].name.common}</button>
+                <button onClick={handleClick}>
+                  {displayedOptions[index].name.common}
+                </button>
               </>
             );
           })}
@@ -147,6 +196,8 @@ function Flags() {
 }
 
 export default Flags;
+
+// todo: add css image flip for new country
 // const [progressBarWidth, setProgressBarWidth] = useState("0%");
 // const { result, error, loading } = useFetch<any>(defaultFetch);
 
