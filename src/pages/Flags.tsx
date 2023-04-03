@@ -18,6 +18,7 @@ import { setDisplayedOptions } from "../helpers/setDisplayedOptions";
 import { setDisplayedCountry } from "../helpers/setDisplayedCountry";
 import ProgressBar from "../Components/ProgressBar/ProgressBar";
 import { Country, RootState } from "../types/rootInterfaces";
+import { handleChoice } from "../Handlers/handleChoice";
 
 // this takes an object of reducers and returns a reducer that can call and handle each of them
 function combineReducers(reducers: any) {
@@ -47,6 +48,8 @@ function Flags() {
     initialNullState as RootState
   );
   const [gameReady, setGameReady] = useState(false);
+  const [correctlyAnswered, setCorrectlyAnswered] = useState(false);
+
   const {
     gameState,
     gameDisplay,
@@ -55,7 +58,7 @@ function Flags() {
     gameVariables,
     fetchState,
   } = state;
-  const { result, error, loading } = fetchState;
+  const { result, errors, loading } = fetchState;
   const { level, score, progressBarWidth } = gameState;
   const { displayedCountry, displayedOptions, displayedModifiers } =
     gameDisplay;
@@ -98,49 +101,57 @@ function Flags() {
   useEffect(() => {
     if (gameReady) {
       const getNext = async () => {
-        const getDisplayOptions = await setDisplayedOptions(state, dispatch);
-        const getDisplayCountry = await setDisplayedCountry(
-          {
-            ...state,
-            gameDisplay: {
-              ...state.gameDisplay,
-              displayedOptions: getDisplayOptions,
+        try {
+          const getDisplayOptions = await setDisplayedOptions(state, dispatch);
+          const getDisplayCountry = await setDisplayedCountry(
+            {
+              ...state,
+              gameDisplay: {
+                ...state.gameDisplay,
+                displayedOptions: getDisplayOptions,
+              },
             },
-          },
-          dispatch
-        );
-        await reconfigAvailability(
-          {
-            ...state,
-            gameDisplay: {
-              ...state.gameDisplay,
-              displayedCountry: getDisplayCountry,
+            dispatch
+          );
+          await reconfigAvailability(
+            {
+              ...state,
+              gameDisplay: {
+                ...state.gameDisplay,
+                displayedCountry: getDisplayCountry,
+              },
             },
-          },
-          dispatch
-        );
+            dispatch
+          );
+        } catch (error) {
+          console.error("Error in getNext:", error);
+          // todo: handle error
+        }
       };
       getNext();
     }
   }, [gameReady]);
 
-  const handleClick = (e: any) => {
-    setGameReady(false);
-    // correct answer given
+  const handleClick = async (e: any) => {
     if (displayedCountry !== null) {
       if (e.target.innerText === displayedCountry.name.common) {
-        dispatch({
-          type: "SET_SCORE",
-          payload: (score + 3) * multiplier,
-        });
-        // increase the level
-        dispatch({ type: "INCREMENT_LEVEL", payload: level + 1 });
-      } else {
-        // wrong answer given
-        dispatch({ type: "INITIALISE_STATE", payload: testState });
+        handleChoice(e, state, dispatch);
       }
     }
   };
+
+  //     // setCorrectlyAnswered(true);
+  //     dispatch({
+  //       type: "SET_SCORE",
+  //       payload: (score + 3) * multiplier,
+  //     });
+  //     // increase the level
+  //     dispatch({ type: "INCREMENT_LEVEL", payload: level + 1 });
+  //   } else {
+  //     // wrong answer given
+  //     dispatch({ type: "INITIALISE_STATE", payload: testState });
+  //   }
+  //   // setGameReady(true);
 
   useEffect(() => {
     console.log("displayedCountry :>> ", displayedCountry);

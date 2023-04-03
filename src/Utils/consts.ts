@@ -107,7 +107,7 @@ export const initUnavailableRegions = [
 export const initialNullState: RootState = {
   fetchState: {
     result: null,
-    error: null,
+    errors: null,
     loading: false,
   },
   gameState: {
@@ -136,39 +136,6 @@ export const initialNullState: RootState = {
     modifierInterval: 0,
   },
 };
-
-// export const initialNullState = {
-//   fetchState: {
-//     result: null,
-//     error: null,
-//     loading: null,
-//   },
-//   gameState: {
-//     level: null,
-//     score: null,
-//     progressBarWidth: null,
-//   },
-//   gameDisplay: {
-//     displayedCountry: null,
-//     displayedOptions: null,
-//     displayedModifiers: null,
-//   },
-//   gameData: {
-//     availableCountries: null,
-//     availableRegions: null,
-//     unavailableCountries: null,
-//     unavailableRegions: null,
-//   },
-//   gameModifiers: {
-//     availableModifiers: null,
-//     appliedModifiers: null,
-//   },
-//   gameVariables: {
-//     multiplier: null,
-//     displayedCount: null,
-//     modifierInterval: null,
-//   },
-// };
 
 export const testState = {
   gameVariables: {
@@ -224,7 +191,7 @@ export const testState = {
   gameState: {
     level: 1,
     score: 0,
-    progressBarWidth: null,
+    progressBarWidth: 0,
     // isModalOpen: false,
     // relics: [],
   },
@@ -259,3 +226,36 @@ export const onSubmit = (state: from.FormState) => {
   // signUp(state.email, state.password);
   console.log(state);
 };
+
+// export const initialNullState = {
+//   fetchState: {
+//     result: null,
+//     error: null,
+//     loading: null,
+//   },
+//   gameState: {
+//     level: null,
+//     score: null,
+//     progressBarWidth: null,
+//   },
+//   gameDisplay: {
+//     displayedCountry: null,
+//     displayedOptions: null,
+//     displayedModifiers: null,
+//   },
+//   gameData: {
+//     availableCountries: null,
+//     availableRegions: null,
+//     unavailableCountries: null,
+//     unavailableRegions: null,
+//   },
+//   gameModifiers: {
+//     availableModifiers: null,
+//     appliedModifiers: null,
+//   },
+//   gameVariables: {
+//     multiplier: null,
+//     displayedCount: null,
+//     modifierInterval: null,
+//   },
+// };

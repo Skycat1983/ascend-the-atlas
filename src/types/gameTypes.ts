@@ -10,7 +10,8 @@ export interface GameState {
 }
 
 export type GameAction =
-  | { type: "INITIALISE_STATE"; payload: { gameState: RootState } }
+  // | { type: "INITIALISE_STATE"; payload: { gameState: RootState } }
+  | { type: "INITIALISE_STATE"; payload: RootState }
   | { type: "RESET" }
   | { type: "SET_LEVEL"; payload: number }
   | { type: "SET_SCORE"; payload: number }

@@ -9,7 +9,8 @@ export interface DataState {
 }
 
 export type DataAction =
-  | { type: "INITIALISE_STATE"; payload: { gameData: RootState } }
+  // | { type: "INITIALISE_STATE"; payload: { gameData: RootState } }
+  | { type: "INITIALISE_STATE"; payload: RootState }
   | {
       type: "INITIALISE_SUBSTATE";
       payload: { substate: string; data: DataState };

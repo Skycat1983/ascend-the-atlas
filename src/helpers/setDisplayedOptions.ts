@@ -1,45 +1,49 @@
 import getRndInt from "../Utils/getRndInt";
 import { Country, RootState } from "../types/rootInterfaces";
+import { DisplayAction } from "../types/displayTypes";
 
 // this function will get the next set of choices to be displayed from the available countries and set them in the displayedChoices state
+
 export const setDisplayedOptions = (
   state: RootState,
-  dispatch: any
+  dispatch: (action: DisplayAction) => void
 ): Promise<Country[]> => {
-  return new Promise((resolve) => {
-    const { availableCountries } = state.gameData;
-    const { displayedCount } = state.gameVariables;
+  return new Promise((resolve, reject) => {
+    try {
+      const { availableCountries } = state.gameData;
+      const { displayedCount } = state.gameVariables;
 
-    // console.log("availableCountries :>> ", availableCountries);
-    // console.log("displayedCount :>> ", displayedCount);
+      if (!availableCountries || availableCountries.length === 0) {
+        throw new Error("No available countries in setDisplayedOptions");
+      }
 
-    if (!availableCountries || availableCountries.length === 0) {
-      throw new Error("No available countries");
+      if (displayedCount > availableCountries.length) {
+        throw new Error(
+          "Displayed count exceeds the number of available countries in setDisplayedOptions"
+        );
+      }
+
+      let displayedOptions: Country[] = [];
+      let i = 0;
+      // while loop prevents infinite loop
+      while (i < displayedCount) {
+        let random = getRndInt(0, availableCountries.length);
+        let country = availableCountries[random];
+        // check for duplicates
+        if (!displayedOptions.includes(country)) {
+          displayedOptions.push(country);
+          i++;
+        }
+      }
+
+      // Dispatch action to update the state
+      dispatch({
+        type: "SET_DISPLAYED_OPTIONS",
+        payload: displayedOptions,
+      });
+      resolve(displayedOptions);
+    } catch (error) {
+      reject(error);
     }
-
-    let displayedOptions: any[] = [];
-    for (let i = 0; i < displayedCount; i++) {
-      let random = getRndInt(0, availableCountries.length);
-      let country = availableCountries[random];
-      displayedOptions.push(country);
-    }
-
-    console.log(
-      "displayedOptions in set displayedOptions:>> ",
-      displayedOptions
-    );
-
-    // Dispatch action to update the state
-    dispatch({
-      type: "SET_DISPLAYED_OPTIONS",
-      payload: displayedOptions,
-    });
-    resolve(displayedOptions);
-    // resolve();
   });
 };
-
-// const {
-//   gameVariables: { displayedCount },
-//   gameData: { availableCountries, unavailableCountries },
-// } = state;

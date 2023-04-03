@@ -10,7 +10,8 @@ export interface VariablesState {
 }
 
 export type VariablesAction =
-  | { type: "INITIALISE_STATE"; payload: { gameVariables: RootState } }
+  // | { type: "INITIALISE_STATE"; payload: { gameVariables: RootState } }
+  | { type: "INITIALISE_STATE"; payload: RootState }
   | { type: "RESET" }
   | { type: "SET_MULTIPLIER"; payload: number }
   | { type: "SET_MULTIPLE_CHOICE_COUNT"; payload: number }

@@ -1,34 +1,38 @@
 import { Country, RootState } from "../types/rootInterfaces";
+import { DataAction } from "../types/dataTypes";
 
 export const setAvailableCountries = (
   state: RootState,
-  dispatch: any
+  dispatch: (action: DataAction) => void
 ): Promise<void> => {
-  return new Promise((resolve) => {
-    const { result } = state.fetchState;
-    const { availableRegions } = state.gameData;
+  return new Promise((resolve, reject) => {
+    try {
+      const { result } = state.fetchState;
+      const { availableRegions } = state.gameData;
 
-    if (!result || result.length === 0) {
-      throw new Error("No result available");
-    }
-
-    if (!availableRegions || availableRegions.length === 0) {
-      throw new Error("No available regions");
-    }
-
-    // console.log("result, availableRegions :>> ", result, availableRegions);
-    let availableCountries: Country[] = [];
-
-    for (let i = 0; i < result.length; i++) {
-      if (availableRegions.includes(result[i].subregion)) {
-        availableCountries.push(result[i]);
+      if (!result || result.length === 0) {
+        throw new Error("No result available");
       }
+
+      if (!availableRegions || availableRegions.length === 0) {
+        throw new Error("No regions available");
+      }
+
+      let availableCountries: Country[] = [];
+
+      for (let i = 0; i < result.length; i++) {
+        if (availableRegions.includes(result[i].subregion)) {
+          availableCountries.push(result[i]);
+        }
+      }
+
+      dispatch({
+        type: "SET_AVAILABLE_COUNTRIES",
+        payload: availableCountries,
+      });
+      resolve();
+    } catch (error) {
+      reject(error);
     }
-    // console.log("availableCountries :>> ", availableCountries);
-    dispatch({
-      type: "SET_AVAILABLE_COUNTRIES",
-      payload: availableCountries,
-    });
-    resolve();
   });
 };

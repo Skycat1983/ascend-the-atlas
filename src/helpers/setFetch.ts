@@ -26,7 +26,7 @@ export const setFetch = async (url: string, dispatch: DispatchType) => {
   try {
     const response = await fetch(url);
     const results = await response.json();
-    console.log("results :>> ", results);
+    // console.log("results :>> ", results);
     // here we type check the results to remove the 'unknown' type
     if (isCountryArray(results)) {
       console.log("in dispatch");

@@ -3,7 +3,7 @@ import { Country } from "./rootInterfaces";
 
 export interface FetchState {
   result: Country[] | null;
-  error: string | null;
+  errors: string | null;
   loading: boolean | null;
 }
 
