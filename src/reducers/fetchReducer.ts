@@ -1,11 +1,7 @@
-import { initialNullState } from "../Utils/consts";
+import { FetchAction, FetchState } from "../types/fetchTypes";
 
-export const fetchReducer = (state: any, action: any) => {
+export const fetchReducer = (state: FetchState, action: FetchAction) => {
   switch (action.type) {
-    // case "INITIALISE_STATE":
-    //   return { ...action.payload.fetchState };
-    // case "RESET":
-    //   return { ...initialNullState.fetchState };
     case "SET_FETCH_RESULT":
       return { ...state, result: action.payload };
     case "SET_ERRORS":
@@ -16,3 +12,8 @@ export const fetchReducer = (state: any, action: any) => {
       return state;
   }
 };
+
+// case "INITIALISE_STATE":
+//   return { ...action.payload.fetchState };
+// case "RESET":
+//   return { ...initialNullState.fetchState };

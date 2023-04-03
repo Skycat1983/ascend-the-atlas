@@ -1,4 +1,4 @@
-import * as from from "./types";
+import * as from from "../types/authAndFormTypes";
 
 import {
   //! FLAGS
@@ -29,7 +29,9 @@ import {
   addEasternAsia,
   addMicronesia,
   addCentralAsia,
-} from "../Modifiers/perksAndPenalties";
+} from "../Modifiers/penalties";
+import { ReducerState } from "react";
+import { RootState } from "../types/rootInterfaces";
 
 export const defaultFetch =
   "https://restcountries.com/v3.1/independent?status=true&fields=area,capital,cca3,flags,independent,landlocked,languages,name,population,region,subregion,timezone,translations";
@@ -102,38 +104,71 @@ export const initUnavailableRegions = [
   "Central Asia",
 ];
 
-export const initialNullState = {
+export const initialNullState: RootState = {
   fetchState: {
     result: null,
     error: null,
-    loading: null,
+    loading: false,
   },
   gameState: {
-    level: null,
-    score: null,
-    progressBarWidth: null,
+    level: 1,
+    score: 0,
+    progressBarWidth: 0,
   },
   gameDisplay: {
     displayedCountry: null,
-    displayedOptions: null,
-    displayedModifiers: null,
+    displayedOptions: [],
+    displayedModifiers: [],
   },
   gameData: {
-    availableCountries: null,
-    availableRegions: null,
-    unavailableCountries: null,
-    unavailableRegions: null,
+    availableCountries: [],
+    availableRegions: [],
+    unavailableCountries: [],
+    unavailableRegions: [],
   },
   gameModifiers: {
-    availableModifiers: null,
-    appliedModifiers: null,
+    availableModifiers: [],
+    appliedModifiers: [],
   },
   gameVariables: {
-    multiplier: null,
-    displayedCount: null,
-    modifierInterval: null,
+    multiplier: 1,
+    displayedCount: 0,
+    modifierInterval: 0,
   },
 };
+
+// export const initialNullState = {
+//   fetchState: {
+//     result: null,
+//     error: null,
+//     loading: null,
+//   },
+//   gameState: {
+//     level: null,
+//     score: null,
+//     progressBarWidth: null,
+//   },
+//   gameDisplay: {
+//     displayedCountry: null,
+//     displayedOptions: null,
+//     displayedModifiers: null,
+//   },
+//   gameData: {
+//     availableCountries: null,
+//     availableRegions: null,
+//     unavailableCountries: null,
+//     unavailableRegions: null,
+//   },
+//   gameModifiers: {
+//     availableModifiers: null,
+//     appliedModifiers: null,
+//   },
+//   gameVariables: {
+//     multiplier: null,
+//     displayedCount: null,
+//     modifierInterval: null,
+//   },
+// };
 
 export const testState = {
   gameVariables: {

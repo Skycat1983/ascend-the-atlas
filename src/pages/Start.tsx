@@ -1,6 +1,6 @@
 import React, { useEffect } from "react";
 import { Link, NavLink, Outlet, useLocation } from "react-router-dom";
-import useFetch from "../CustomHooks/useFetch";
+// import useFetch from "../CustomHooks/useFetch";
 import getRndInt from "../Utils/getRndInt";
 
 type Props = {};

@@ -1,12 +1,23 @@
+import { Country, RootState } from "../types/rootInterfaces";
+
 export const setAvailableCountries = (
-  state: any,
+  state: RootState,
   dispatch: any
 ): Promise<void> => {
   return new Promise((resolve) => {
     const { result } = state.fetchState;
     const { availableRegions } = state.gameData;
-    console.log("result, availableRegions :>> ", result, availableRegions);
-    let availableCountries: any[] = [];
+
+    if (!result || result.length === 0) {
+      throw new Error("No result available");
+    }
+
+    if (!availableRegions || availableRegions.length === 0) {
+      throw new Error("No available regions");
+    }
+
+    // console.log("result, availableRegions :>> ", result, availableRegions);
+    let availableCountries: Country[] = [];
 
     for (let i = 0; i < result.length; i++) {
       if (availableRegions.includes(result[i].subregion)) {

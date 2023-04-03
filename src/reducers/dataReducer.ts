@@ -1,6 +1,7 @@
 import { initialNullState } from "../Utils/consts";
+import { DataState, DataAction } from "../types/dataTypes";
 
-export const gameDataReducer = (state: any, action: any) => {
+export const gameDataReducer = (state: DataState, action: DataAction) => {
   switch (action.type) {
     case "INITIALISE_STATE":
       return { ...action.payload.gameData };

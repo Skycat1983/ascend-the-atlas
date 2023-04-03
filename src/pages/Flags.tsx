@@ -10,14 +10,14 @@ import { gameModifiersReducer } from "../reducers/modifiersReducer";
 import { gameDisplayReducer } from "../reducers/displayReducer";
 import { gameDataReducer } from "../reducers/dataReducer";
 import { fetchReducer } from "../reducers/fetchReducer";
-import { setData } from "../helpers/setData";
+import { setFetch } from "../helpers/setFetch";
 import { setAvailableCountries } from "../helpers/setAvailableCountries";
 import { setDataAvailability } from "../helpers/setDataAvailability";
 import { reconfigAvailability } from "../helpers/reconfigAvailability";
 import { setDisplayedOptions } from "../helpers/setDisplayedOptions";
 import { setDisplayedCountry } from "../helpers/setDisplayedCountry";
 import ProgressBar from "../Components/ProgressBar/ProgressBar";
-import { ReducerState } from "../Utils/interfaces";
+import { Country, RootState } from "../types/rootInterfaces";
 
 // this takes an object of reducers and returns a reducer that can call and handle each of them
 function combineReducers(reducers: any) {
@@ -26,7 +26,7 @@ function combineReducers(reducers: any) {
     for (const key in reducers) {
       nextState[key] = reducers[key](state[key], action);
     }
-    return nextState as ReducerState;
+    return nextState as RootState;
   };
 }
 
@@ -42,7 +42,10 @@ const rootReducer = combineReducers({
 
 function Flags() {
   // the reducer state with all its deconstructed values below
-  const [state, dispatch] = useReducer(rootReducer, initialNullState);
+  const [state, dispatch] = useReducer(
+    rootReducer,
+    initialNullState as RootState
+  );
   const [gameReady, setGameReady] = useState(false);
   const {
     gameState,
@@ -69,7 +72,7 @@ function Flags() {
   // fetch data fron API
   useEffect(() => {
     const init = async () => {
-      await setData(defaultFetch, dispatch);
+      await setFetch(defaultFetch, dispatch);
       dispatch({ type: "INITIALISE_STATE", payload: testState });
     };
     init();
@@ -124,16 +127,18 @@ function Flags() {
   const handleClick = (e: any) => {
     setGameReady(false);
     // correct answer given
-    if (e.target.innerText === displayedCountry.name.common) {
-      dispatch({
-        type: "SET_SCORE",
-        payload: (score + 3) * multiplier,
-      });
-      // increase the level
-      dispatch({ type: "INCREMENT_LEVEL", payload: level + 1 });
-    } else {
-      // wrong answer given
-      dispatch({ type: "INITIALISE_STATE", payload: testState });
+    if (displayedCountry !== null) {
+      if (e.target.innerText === displayedCountry.name.common) {
+        dispatch({
+          type: "SET_SCORE",
+          payload: (score + 3) * multiplier,
+        });
+        // increase the level
+        dispatch({ type: "INCREMENT_LEVEL", payload: level + 1 });
+      } else {
+        // wrong answer given
+        dispatch({ type: "INITIALISE_STATE", payload: testState });
+      }
     }
   };
 
@@ -171,23 +176,24 @@ function Flags() {
       <div className="flag-container">
         {displayedCountry && (
           <img
+            key={displayedCountry.cca3}
             src={displayedCountry.flags.png}
             alt={displayedCountry.name.common}
-            className={`${displayedCountry.classname}`}
+            // className={`${displayedCountry.classname}`}
           />
         )}
       </div>
 
       <div className="buttons-container">
-        {displayedCountry &&
-          displayedOptions.map((country: any, index: number) => {
+        {displayedOptions &&
+          displayedOptions.map((country: Country, index: number) => {
             // const modifiedCountry = applyModifiers(country);
             return (
-              <>
-                <button onClick={handleClick}>
-                  {displayedOptions[index].name.common}
-                </button>
-              </>
+              // <>
+              <button key={country.cca3} onClick={handleClick}>
+                {displayedOptions[index].name.common}
+              </button>
+              // </>
             );
           })}
       </div>

@@ -1,6 +1,10 @@
 import { initialNullState } from "../Utils/consts";
+import { ModifiersAction, ModifiersState } from "../types/modifierTypes";
 
-export const gameModifiersReducer = (state: any, action: any) => {
+export const gameModifiersReducer = (
+  state: ModifiersState,
+  action: ModifiersAction
+) => {
   switch (action.type) {
     case "INITIALISE_STATE":
       return { ...action.payload.gameModifiers };

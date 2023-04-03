@@ -1,15 +1,21 @@
 import getRndInt from "../Utils/getRndInt";
+import { Country, RootState } from "../types/rootInterfaces";
 
 // this function will get the next set of choices to be displayed from the available countries and set them in the displayedChoices state
 export const setDisplayedOptions = (
-  state: any,
+  state: RootState,
   dispatch: any
-): Promise<any[]> => {
+): Promise<Country[]> => {
   return new Promise((resolve) => {
     const { availableCountries } = state.gameData;
     const { displayedCount } = state.gameVariables;
-    console.log("availableCountries :>> ", availableCountries);
-    console.log("displayedCount :>> ", displayedCount);
+
+    // console.log("availableCountries :>> ", availableCountries);
+    // console.log("displayedCount :>> ", displayedCount);
+
+    if (!availableCountries || availableCountries.length === 0) {
+      throw new Error("No available countries");
+    }
 
     let displayedOptions: any[] = [];
     for (let i = 0; i < displayedCount; i++) {

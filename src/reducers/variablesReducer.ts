@@ -1,6 +1,10 @@
 import { initialNullState } from "../Utils/consts";
+import { VariablesAction, VariablesState } from "../types/variablesTypes";
 
-export const gameVariablesReducer = (state: any, action: any) => {
+export const gameVariablesReducer = (
+  state: VariablesState,
+  action: VariablesAction
+) => {
   switch (action.type) {
     case "INITIALISE_STATE":
       return { ...action.payload.gameVariables };

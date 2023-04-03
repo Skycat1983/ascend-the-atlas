@@ -1,7 +1,10 @@
 import { createContext, useEffect, useState } from "react";
-import { User } from "../Utils/types";
+import { User } from "../types/authAndFormTypes";
 import { defaultContext } from "../Utils/consts";
-import { AuthContextProviderProps, AuthContextType } from "../Utils/types";
+import {
+  AuthContextProviderProps,
+  AuthContextType,
+} from "../types/authAndFormTypes";
 import { auth } from "../config";
 import {
   createUserWithEmailAndPassword,

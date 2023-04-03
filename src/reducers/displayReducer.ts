@@ -1,6 +1,10 @@
 import { initialNullState } from "../Utils/consts";
+import { DisplayAction, DisplayState } from "../types/displayTypes";
 
-export const gameDisplayReducer = (state: any, action: any) => {
+export const gameDisplayReducer = (
+  state: DisplayState,
+  action: DisplayAction
+) => {
   switch (action.type) {
     case "INITIALISE_STATE":
       return { ...action.payload.gameDisplay };
