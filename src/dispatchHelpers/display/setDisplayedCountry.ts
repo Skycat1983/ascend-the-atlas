@@ -39,6 +39,9 @@ export const setDisplayedCountry = (
         type: "SET_DISPLAYED_COUNTRY",
         payload: displayedOptions[chosenCountry],
       });
+      //! we always reach here. but sometimes the displayedOptions[chosenCountry] is undefined. also, sometimes it isn't undefined, but the country flag still does now load and the clg of displayedCountry is null
+      console.warn("FAIL????", displayedOptions[chosenCountry]);
+
       resolve(displayedOptions[chosenCountry]);
     } catch (error) {
       reject(error);

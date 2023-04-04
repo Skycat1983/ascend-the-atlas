@@ -9,6 +9,7 @@ export const prepNextQuestion = async (
 ): Promise<void> => {
   try {
     const getDisplayOptions = await setDisplayedOptions(state, dispatch);
+    //! this getDisplayCountry below is not always running
     const getDisplayCountry = await setDisplayedCountry(
       {
         ...state,
@@ -19,6 +20,7 @@ export const prepNextQuestion = async (
       },
       dispatch
     );
+    // console.log("pass");
     await reconfigAvailability(
       {
         ...state,

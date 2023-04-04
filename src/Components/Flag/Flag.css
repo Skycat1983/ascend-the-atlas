@@ -12,20 +12,40 @@
 }
 
 .flag-image {
-  max-width: 100%;
-  max-height: 100%;
-  object-fit: contain;
-  transform-style: preserve-3d;
-  transition: transform 1s;
   position: absolute;
-  transform: rotateY(0deg);
-  /* Start from the invisible point */
+  width: 100%;
+  height: auto;
+  backface-visibility: hidden;
 }
 
-/* .flag-image.flip {
-  transform: rotateY(270deg);
-} */
+.flag-image.flip-out {
+  animation: flip-out 0.5s forwards;
+}
 
-.flag-image.invisible {
-  transform: rotateY(90deg);
+.flag-image.flip-in {
+  animation: flip-in 0.5s forwards;
+}
+
+.flag-image.hidden {
+  visibility: hidden;
+}
+
+@keyframes flip-out {
+  0% {
+    transform: rotateY(0deg);
+  }
+
+  100% {
+    transform: rotateY(-180deg);
+  }
+}
+
+@keyframes flip-in {
+  0% {
+    transform: rotateY(180deg);
+  }
+
+  100% {
+    transform: rotateY(360deg);
+  }
 }

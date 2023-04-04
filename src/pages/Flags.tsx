@@ -56,7 +56,7 @@ function Flags() {
   );
   const [gameReady, setGameReady] = useState(false);
   const [buttonText, setButtonText] = useState("START");
-  const [correctAnswer, setCorrectAnswer] = useState("");
+  const [render, setRender] = useState(false);
 
   const {
     gameState,
@@ -80,6 +80,9 @@ function Flags() {
   const { availableModifiers, appliedModifiers } = gameModifiers;
   // todo: modal
 
+  const toggle = () => {
+    setRender(!render);
+  };
   // fetch data fron API
   useEffect(() => {
     const init = async () => {
@@ -98,7 +101,6 @@ function Flags() {
     if (result && result.length > 0) {
       const calibrate = async () => {
         await setAvailableCountries(state, dispatch);
-        setGameReady(true);
       };
       calibrate();
     }
@@ -108,12 +110,27 @@ function Flags() {
   }, [availableRegions]);
 
   useEffect(() => {
+    if (availableCountries && availableCountries.length > 0) {
+      setGameReady(true);
+    }
+  }, [availableCountries]);
+
+  useEffect(() => {
     if (gameReady && availableCountries && availableCountries.length > 0) {
+      console.log("pass");
+
       prepNextQuestion(state, dispatch);
+      toggle();
     }
   }, [gameReady]);
+  //! adding availableCountries to the dependency array causes error ('Error in prepNextQuestion: Error: Displayed count exceeds the number of available countries in setDisplayedOptions') and also breaks the flip animation
 
   const handleClick = async (e: any) => {
+    console.warn("e.target", e.target);
+    if (e.target.value === "RESTART") {
+      console.log("should be restartiing");
+      dispatch({ type: "INITIALISE_STATE", payload: testState });
+    }
     console.log("e>>>", e);
     const validAnswer = await answerHandler(e, state, dispatch);
     if (validAnswer) {
@@ -127,6 +144,8 @@ function Flags() {
     // setGameReady(false);
     prepNextQuestion(state, dispatch);
   };
+
+  console.log("displayedCountry CLG at bottom of main", displayedCountry);
 
   return (
     <>
@@ -145,17 +164,15 @@ function Flags() {
         ></MultipleChoices>
       )}
 
-      <button onClick={handleClick}>{buttonText}</button>
+      <button value="" onClick={handleClick}>
+        {buttonText}
+      </button>
       {/* {!gameReady && <button onClick={handleClick}>NEXT</button>} */}
     </>
   );
 }
 
 export default Flags;
-
-// todo: add css image flip for new country
-// const [progressBarWidth, setProgressBarWidth] = useState("0%");
-// const { result, error, loading } = useFetch<any>(defaultFetch);
 
 {
   /* <div className="flag-container">

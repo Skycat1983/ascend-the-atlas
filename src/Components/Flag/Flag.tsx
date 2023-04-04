@@ -8,43 +8,27 @@ interface FlagProps {
 
 const Flag: React.FC<FlagProps> = ({ displayedCountry }) => {
   const [currentCountry, setCurrentCountry] = useState<Country | null>(null);
-  const [prevCountry, setPrevCountry] = useState<Country | null>(null);
-  const [flipping, setFlipping] = useState(true);
+  const [nextCountry, setNextCountry] = useState<Country | null>(null);
+  const [isFlipping, setIsFlipping] = useState(false);
 
-  // useEffect runs when props changes
   useEffect(() => {
-    if (currentCountry) {
-      setPrevCountry(currentCountry);
-      return () => {
-        setTimeout(() => {
-          setCurrentCountry(displayedCountry);
-          setFlipping(true);
-        }, 500);
-      };
+    if (!currentCountry) {
+      setCurrentCountry(displayedCountry);
+    } else {
+      setNextCountry(displayedCountry);
+      setIsFlipping(true);
     }
-    setCurrentCountry(displayedCountry);
-    setFlipping(true);
-    return () => {
-      setTimeout(() => {
-        setFlipping(false);
-      }, 500);
-    };
-    // // if no country is displayed, then we are at startup, and we set the current country to the displayed country...
-    // if (!currentCountry) {
-    //   console.log("if if");
-    //   setCurrentCountry(displayedCountry);
-    //   // ...and setFlipping to true to trigger the animation
-    //   setFlipping(true);
-    // } else {
-    //   console.log("in else");
-    //   // when the displayed country changes, we set the flipping to false
-    //   setTimeout(() => {
-    //     // setFlipping(false);
-    //   }, 500);
-    // }
   }, [displayedCountry]);
 
-  // we can achieve the desired effect by
+  const onAnimationEnd = () => {
+    if (isFlipping) {
+      setCurrentCountry(nextCountry);
+      setNextCountry(null);
+      setIsFlipping(false);
+    }
+  };
+
+  console.log("fail :>> ", displayedCountry);
 
   return (
     <div className="flag-container">
@@ -53,43 +37,22 @@ const Flag: React.FC<FlagProps> = ({ displayedCountry }) => {
           key={currentCountry.cca3}
           src={currentCountry.flags.png}
           alt={currentCountry.name.common}
-          className={`flag-image ${flipping ? "invisible" : ""}`}
-          // onAnimationEnd={handleAnimationEnd}
+          className={`flag-image ${isFlipping ? "flip-out" : ""}`}
+          onAnimationEnd={onAnimationEnd}
         />
-      )
-        ? !prevCountry
-        : prevCountry && (
-            <img
-              key={prevCountry.cca3}
-              src={prevCountry.flags.png}
-              alt={prevCountry.name.common}
-              className={`flag-image ${flipping ? "" : "flip"}`}
-              // onAnimationEnd={handleAnimationEnd}
-            />
-          )}
-      {/* {prevCountry && (
+      )}
+      {nextCountry && (
         <img
-          key={prevCountry.cca3}
-          src={prevCountry.flags.png}
-          alt={prevCountry.name.common}
-          className={`flag-image ${flipping ? "" : "flip"}`}
-          // onAnimationEnd={handleAnimationEnd}
+          key={nextCountry.cca3}
+          src={nextCountry.flags.png}
+          alt={nextCountry.name.common}
+          className={`flag-image ${isFlipping ? "flip-in" : "hidden"}`}
         />
-      )} */}
+      )}
     </div>
   );
 };
 
 export default Flag;
 
-//* can be used to flip flag early
-//   setCurrentCountry(displayedCountry);
-//   setFlipping(false);
-//   return () => {
-//     setTimeout(() => {
-//       setFlipping(true);
-//     }, 500);
-//   };
-// }, [displayedCountry]);
-
-//! className={`${displayedCountry.classname}`}
+// //! className={`${displayedCountry.classname}`}

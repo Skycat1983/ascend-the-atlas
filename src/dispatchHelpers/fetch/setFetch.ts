@@ -26,9 +26,11 @@ export const setFetch = (
   dispatch: DispatchType
 ): Promise<void> => {
   return new Promise(async (resolve, reject) => {
+    // console.log("FETCH");
     try {
       const response = await fetch(url);
       const results = await response.json();
+      console.log("RESULTS: ", results);
 
       if (isCountryArray(results)) {
         console.log("in dispatch");

@@ -9,6 +9,7 @@ export const setDisplayedOptions = (
   dispatch: (action: DisplayAction) => void
 ): Promise<Country[]> => {
   return new Promise((resolve, reject) => {
+    // ! this function always runs to here
     try {
       const { availableCountries } = state.gameData;
       const { displayedCount } = state.gameVariables;
@@ -41,6 +42,7 @@ export const setDisplayedOptions = (
         type: "SET_DISPLAYED_OPTIONS",
         payload: displayedOptions,
       });
+      console.log("TEST>>>>");
       resolve(displayedOptions);
     } catch (error) {
       reject(error);
