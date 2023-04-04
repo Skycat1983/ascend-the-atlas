@@ -2,23 +2,30 @@ import React, { useEffect, useMemo, useReducer, useState } from "react";
 import "@total-typescript/ts-reset";
 import "../App.css";
 import { testState, initialNullState, defaultFetch } from "../Utils/consts";
-import Modal from "../Components/Modal";
-import { getProgressBarColor } from "../Utils/getProgressBarColor";
-import { gameStateReducer } from "../reducers/gameReducer";
-import { gameVariablesReducer } from "../reducers/variablesReducer";
-import { gameModifiersReducer } from "../reducers/modifiersReducer";
-import { gameDisplayReducer } from "../reducers/displayReducer";
-import { gameDataReducer } from "../reducers/dataReducer";
-import { fetchReducer } from "../reducers/fetchReducer";
-import { setFetch } from "../helpers/setFetch";
-import { setAvailableCountries } from "../helpers/setAvailableCountries";
-import { setDataAvailability } from "../helpers/setDataAvailability";
-import { reconfigAvailability } from "../helpers/reconfigAvailability";
-import { setDisplayedOptions } from "../helpers/setDisplayedOptions";
-import { setDisplayedCountry } from "../helpers/setDisplayedCountry";
+import {
+  gameStateReducer,
+  gameVariablesReducer,
+  gameModifiersReducer,
+  gameDisplayReducer,
+  gameDataReducer,
+  fetchReducer,
+} from "../reducers";
+import {
+  setFetch,
+  setAvailableCountries,
+  setDataAvailability,
+  reconfigAvailability,
+  setDisplayedOptions,
+  setDisplayedCountry,
+} from "../dispatchHelpers";
 import ProgressBar from "../Components/ProgressBar/ProgressBar";
 import { Country, RootState } from "../types/rootInterfaces";
-import { handleChoice } from "../Handlers/handleChoice";
+import { answerHandler } from "../Handlers/answerHandler";
+import { prepNextQuestion } from "../Handlers/questionHandler";
+import Modal from "../Components/Modal";
+import { getProgressBarColor } from "../Utils/getProgressBarColor";
+import MultipleChoices from "../Components/MultipleChoices/MultipleChoices";
+import Flag from "../Components/Flag/Flag";
 
 // this takes an object of reducers and returns a reducer that can call and handle each of them
 function combineReducers(reducers: any) {
@@ -48,7 +55,8 @@ function Flags() {
     initialNullState as RootState
   );
   const [gameReady, setGameReady] = useState(false);
-  const [correctlyAnswered, setCorrectlyAnswered] = useState(false);
+  const [buttonText, setButtonText] = useState("START");
+  const [correctAnswer, setCorrectAnswer] = useState("");
 
   const {
     gameState,
@@ -75,101 +83,50 @@ function Flags() {
   // fetch data fron API
   useEffect(() => {
     const init = async () => {
-      await setFetch(defaultFetch, dispatch);
-      dispatch({ type: "INITIALISE_STATE", payload: testState });
+      try {
+        await setFetch(defaultFetch, dispatch);
+        dispatch({ type: "INITIALISE_STATE", payload: testState });
+      } catch (error) {
+        console.error("Error in setFetch:", error);
+      }
     };
     init();
   }, []);
 
   // set available countries after initialisation, and after change of availableRegions
   useEffect(() => {
-    console.log(result);
     if (result && result.length > 0) {
       const calibrate = async () => {
         await setAvailableCountries(state, dispatch);
         setGameReady(true);
       };
       calibrate();
-      setGameReady(true);
     }
-
     return () => {
       setGameReady(false);
     };
-  }, [result, availableRegions]);
+  }, [availableRegions]);
 
   useEffect(() => {
-    if (gameReady) {
-      const getNext = async () => {
-        try {
-          const getDisplayOptions = await setDisplayedOptions(state, dispatch);
-          const getDisplayCountry = await setDisplayedCountry(
-            {
-              ...state,
-              gameDisplay: {
-                ...state.gameDisplay,
-                displayedOptions: getDisplayOptions,
-              },
-            },
-            dispatch
-          );
-          await reconfigAvailability(
-            {
-              ...state,
-              gameDisplay: {
-                ...state.gameDisplay,
-                displayedCountry: getDisplayCountry,
-              },
-            },
-            dispatch
-          );
-        } catch (error) {
-          console.error("Error in getNext:", error);
-          // todo: handle error
-        }
-      };
-      getNext();
+    if (gameReady && availableCountries && availableCountries.length > 0) {
+      prepNextQuestion(state, dispatch);
     }
   }, [gameReady]);
 
   const handleClick = async (e: any) => {
-    if (displayedCountry !== null) {
-      if (e.target.innerText === displayedCountry.name.common) {
-        handleChoice(e, state, dispatch);
-      }
+    console.log("e>>>", e);
+    const validAnswer = await answerHandler(e, state, dispatch);
+    if (validAnswer) {
+      console.log("valid answer");
+      setButtonText("NEXT");
+    } else {
+      console.log("invalid answer ");
+      // dispatch({ type: "INITIALISE_STATE", payload: testState });
+      setButtonText("RESTART");
     }
+    // setGameReady(false);
+    prepNextQuestion(state, dispatch);
   };
-
-  //     // setCorrectlyAnswered(true);
-  //     dispatch({
-  //       type: "SET_SCORE",
-  //       payload: (score + 3) * multiplier,
-  //     });
-  //     // increase the level
-  //     dispatch({ type: "INCREMENT_LEVEL", payload: level + 1 });
-  //   } else {
-  //     // wrong answer given
-  //     dispatch({ type: "INITIALISE_STATE", payload: testState });
-  //   }
-  //   // setGameReady(true);
-
-  useEffect(() => {
-    console.log("displayedCountry :>> ", displayedCountry);
-    // console.warn(
-    //   // "fetchstate :>> ",
-    //   // state.fetchState,
-    //   "gamestate :>> ",
-    //   state.gameState,
-    //   "gamedisplay :>> ",
-    //   state.gameDisplay,
-    //   "gamedata :>> ",
-    //   state.gameData
-    //   // "gamemodifiers :>> ",
-    //   // state.gameModifiers,
-    //   // "gamevariables :>> ",
-    //   // state.gameVariables
-    // );
-  }, [displayedCountry]);
 
   return (
     <>
@@ -177,37 +134,19 @@ function Flags() {
         Level: {level} Score: {score}
       </div>
       {progressBarWidth && (
-        <ProgressBar
-          progressBarWidth={progressBarWidth}
-          interval={state.gameVariables.modifierInterval}
-          level={level}
-        ></ProgressBar>
+        <ProgressBar progressBarWidth={progressBarWidth}></ProgressBar>
+      )}
+      {displayedCountry && <Flag displayedCountry={displayedCountry}></Flag>}
+
+      {displayedOptions && displayedOptions.length > 0 && (
+        <MultipleChoices
+          displayedOptions={displayedOptions}
+          handleClick={handleClick}
+        ></MultipleChoices>
       )}
 
-      <div className="flag-container">
-        {displayedCountry && (
-          <img
-            key={displayedCountry.cca3}
-            src={displayedCountry.flags.png}
-            alt={displayedCountry.name.common}
-            // className={`${displayedCountry.classname}`}
-          />
-        )}
-      </div>
-
-      <div className="buttons-container">
-        {displayedOptions &&
-          displayedOptions.map((country: Country, index: number) => {
-            // const modifiedCountry = applyModifiers(country);
-            return (
-              // <>
-              <button key={country.cca3} onClick={handleClick}>
-                {displayedOptions[index].name.common}
-              </button>
-              // </>
-            );
-          })}
-      </div>
+      <button onClick={handleClick}>{buttonText}</button>
+      {/* {!gameReady && <button onClick={handleClick}>NEXT</button>} */}
     </>
   );
 }
@@ -217,6 +156,19 @@ export default Flags;
 // todo: add css image flip for new country
 // const [progressBarWidth, setProgressBarWidth] = useState("0%");
 // const { result, error, loading } = useFetch<any>(defaultFetch);
+
+{
+  /* <div className="flag-container">
+        {displayedCountry && (
+          <img
+            key={displayedCountry.cca3}
+            src={displayedCountry.flags.png}
+            alt={displayedCountry.name.common}
+            // className={`${displayedCountry.classname}`}
+          />
+        )}
+      </div> */
+}
 
 {
   /* <div className="relic-container">

@@ -1,6 +1,6 @@
-import getRndInt from "../Utils/getRndInt";
-import { RootState, Country } from "../types/rootInterfaces";
-import { DisplayAction } from "../types/displayTypes";
+import getRndInt from "../../Utils/getRndInt";
+import { RootState, Country } from "../../types/rootInterfaces";
+import { DisplayAction } from "../../types/displayTypes";
 
 // this function will get a random country from the displayed choices state. It will then dispatch an action to update the state with the chosen country
 export const setDisplayedCountry = (

@@ -1,6 +1,6 @@
-import getRndInt from "../Utils/getRndInt";
-import { Country, RootState } from "../types/rootInterfaces";
-import { DisplayAction } from "../types/displayTypes";
+import getRndInt from "../../Utils/getRndInt";
+import { Country, RootState } from "../../types/rootInterfaces";
+import { DisplayAction } from "../../types/displayTypes";
 
 // this function will get the next set of choices to be displayed from the available countries and set them in the displayedChoices state
 
@@ -27,7 +27,7 @@ export const setDisplayedOptions = (
       let i = 0;
       // while loop prevents infinite loop
       while (i < displayedCount) {
-        let random = getRndInt(0, availableCountries.length);
+        let random = getRndInt(0, availableCountries.length - 1);
         let country = availableCountries[random];
         // check for duplicates
         if (!displayedOptions.includes(country)) {

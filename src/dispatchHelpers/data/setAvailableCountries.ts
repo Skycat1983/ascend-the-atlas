@@ -1,5 +1,5 @@
-import { Country, RootState } from "../types/rootInterfaces";
-import { DataAction } from "../types/dataTypes";
+import { Country, RootState } from "../../types/rootInterfaces";
+import { DataAction } from "../../types/dataTypes";
 
 export const setAvailableCountries = (
   state: RootState,
