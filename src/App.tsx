@@ -5,7 +5,7 @@ import Home from "./pages/Home";
 import Start from "./pages/Start";
 import Navbar from "./Components/Navbar";
 import Item from "./pages/Item";
-import Flags from "./pages/Flags";
+import FlagGame from "./pages/FlagGame";
 import Cities from "./pages/Cities";
 import { AuthContextProvider } from "./Contexts/AuthContext";
 import Login from "./pages/Login";
@@ -20,7 +20,7 @@ function App() {
           <Route path="/" element={<Home />} />
           <Route path="*" element={<h1>404</h1>} />
           <Route path="/start" element={<Start />}>
-            <Route path="flags" element={<Flags />} />
+            <Route path="flags" element={<FlagGame />} />
             <Route path="cities" element={<Cities />} />
           </Route>
           {/* <Route path="/about" element={<About />} /> */}

@@ -42,7 +42,12 @@ export const setDisplayedOptions = (
         type: "SET_DISPLAYED_OPTIONS",
         payload: displayedOptions,
       });
-      console.log("TEST>>>>");
+      if (displayedOptions === null || displayedOptions === undefined) {
+        console.warn(
+          "displayedOptions not showing in setDisplayedOptions end",
+          displayedOptions
+        );
+      }
       resolve(displayedOptions);
     } catch (error) {
       reject(error);

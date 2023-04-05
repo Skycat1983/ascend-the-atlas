@@ -48,7 +48,7 @@ const rootReducer = combineReducers({
   gameData: gameDataReducer,
 });
 
-function Flags() {
+function FlagGame() {
   // the reducer state with all its deconstructed values below
   const [state, dispatch] = useReducer(
     rootReducer,
@@ -145,7 +145,12 @@ function Flags() {
     prepNextQuestion(state, dispatch);
   };
 
-  console.log("displayedCountry CLG at bottom of main", displayedCountry);
+  if (displayedCountry === null || displayedCountry === undefined) {
+    console.warn(
+      "displayedCountry not showing. main page end",
+      displayedCountry
+    );
+  }
 
   return (
     <>
@@ -172,7 +177,7 @@ function Flags() {
   );
 }
 
-export default Flags;
+export default FlagGame;
 
 {
   /* <div className="flag-container">

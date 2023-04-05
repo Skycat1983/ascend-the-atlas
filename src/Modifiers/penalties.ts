@@ -5,6 +5,8 @@ import {
 
 //!---- these modifiers are for the flag ----!//
 
+//* shift region OR add region modifiers
+
 //! extra life
 // export const extraLifeModifier = {
 //   name: "Extra Life",
