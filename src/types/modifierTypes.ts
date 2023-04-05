@@ -2,6 +2,8 @@ import { Country, RootState } from "./rootInterfaces";
 
 export interface Modifier {
   name: string;
+  rarity: number;
+
   description: string;
   multiplier: number;
   url: string;

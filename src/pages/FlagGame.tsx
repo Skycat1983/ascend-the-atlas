@@ -17,15 +17,17 @@ import {
   reconfigAvailability,
   setDisplayedOptions,
   setDisplayedCountry,
-} from "../dispatchHelpers";
+} from "../helpers";
 import ProgressBar from "../Components/ProgressBar/ProgressBar";
 import { Country, RootState } from "../types/rootInterfaces";
-import { answerHandler } from "../Handlers/answerHandler";
-import { prepNextQuestion } from "../Handlers/questionHandler";
+import { answerHandler } from "../handlers/answerHandler";
+import { prepNextQuestion } from "../handlers/questionHandler";
 import Modal from "../Components/Modal";
 import { getProgressBarColor } from "../Utils/getProgressBarColor";
 import MultipleChoices from "../Components/MultipleChoices/MultipleChoices";
 import Flag from "../Components/Flag/Flag";
+import { thresholdHandler } from "../handlers/thresholdHandler";
+import Countdown from "../Components/Countdown/Countdown";
 
 // this takes an object of reducers and returns a reducer that can call and handle each of them
 function combineReducers(reducers: any) {
@@ -56,8 +58,9 @@ function FlagGame() {
   );
   const [gameReady, setGameReady] = useState(false);
   const [buttonText, setButtonText] = useState("START");
-  const [render, setRender] = useState(false);
-
+  const [isCountingDown, setIsCountingDown] = useState(false);
+  const [reset, setReset] = useState(false);
+  // const [action, setAction] = useState<"start" | "stop" | "reset">("start");
   const {
     gameState,
     gameDisplay,
@@ -70,7 +73,7 @@ function FlagGame() {
   const { level, score, progressBarWidth } = gameState;
   const { displayedCountry, displayedOptions, displayedModifiers } =
     gameDisplay;
-  const { multiplier, displayedCount, modifierInterval } = gameVariables;
+  const { multiplier, displayedCount, modifierInterval, timer } = gameVariables;
   const {
     availableCountries,
     availableRegions,
@@ -80,9 +83,6 @@ function FlagGame() {
   const { availableModifiers, appliedModifiers } = gameModifiers;
   // todo: modal
 
-  const toggle = () => {
-    setRender(!render);
-  };
   // fetch data fron API
   useEffect(() => {
     const init = async () => {
@@ -109,6 +109,8 @@ function FlagGame() {
     };
   }, [availableRegions]);
 
+  // signal that config is complete. //TODO: use loading state instead.
+  //? maybe loading / !loading can be used for every step ?
   useEffect(() => {
     if (availableCountries && availableCountries.length > 0) {
       setGameReady(true);
@@ -117,43 +119,70 @@ function FlagGame() {
 
   useEffect(() => {
     if (gameReady && availableCountries && availableCountries.length > 0) {
-      console.log("pass");
-
       prepNextQuestion(state, dispatch);
-      toggle();
     }
   }, [gameReady]);
-  //! adding availableCountries to the dependency array causes error ('Error in prepNextQuestion: Error: Displayed count exceeds the number of available countries in setDisplayedOptions') and also breaks the flip animation
 
   const handleClick = async (e: any) => {
-    console.warn("e.target", e.target);
-    if (e.target.value === "RESTART") {
-      console.log("should be restartiing");
-      dispatch({ type: "INITIALISE_STATE", payload: testState });
-    }
-    console.log("e>>>", e);
+    // console.warn("e.target", e.target);
+    // if (e.target.value === "RESTART") {
+    //   console.log("should be restartiing");
+    //   dispatch({ type: "INITIALISE_STATE", payload: testState });
+    // }
+    // console.log("e>>>", e);
     const validAnswer = await answerHandler(e, state, dispatch);
     if (validAnswer) {
       console.log("valid answer");
       setButtonText("NEXT");
+      thresholdHandler(state, dispatch);
     } else {
       console.log("invalid answer ");
       // dispatch({ type: "INITIALISE_STATE", payload: testState });
       setButtonText("RESTART");
     }
-    // setGameReady(false);
+    dispatch({ type: "SET_TIMER_INTERVAL", payload: timer });
+    signalTimerReset();
     prepNextQuestion(state, dispatch);
   };
 
-  if (displayedCountry === null || displayedCountry === undefined) {
-    console.warn(
-      "displayedCountry not showing. main page end",
-      displayedCountry
-    );
-  }
+  // if (
+  //   availableCountries &&
+  //   availableCountries.length > 0 &&
+  //   (displayedCountry === null || displayedCountry === undefined)
+  // ) {
+  //   console.warn(
+  //     "displayedCountry not showing. main page end",
+  //     displayedCountry
+  //   );
+  // }
+
+  const handleCallback = (remainingTime: number) => {
+    console.log("Remaining time:", remainingTime);
+  };
+
+  const toggleCountdown = () => {
+    setIsCountingDown(!isCountingDown);
+  };
+
+  const signalTimerReset = () => {
+    setReset(!reset);
+    setIsCountingDown(false);
+  };
 
   return (
     <>
+      <div>
+        <Countdown
+          timer={timer}
+          isCountingDown={isCountingDown}
+          cb={handleCallback}
+          reset={reset}
+        />
+        <button onClick={() => toggleCountdown()}>
+          {isCountingDown ? "STOP" : "START"}
+        </button>
+        <button onClick={signalTimerReset}>RESET</button>
+      </div>
       <div>
         Level: {level} Score: {score}
       </div>
@@ -168,10 +197,9 @@ function FlagGame() {
           handleClick={handleClick}
         ></MultipleChoices>
       )}
-
-      <button value="" onClick={handleClick}>
+      {/* <button value="" onClick={handleClick}>
         {buttonText}
-      </button>
+      </button> */}
       {/* {!gameReady && <button onClick={handleClick}>NEXT</button>} */}
     </>
   );

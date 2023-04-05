@@ -48,16 +48,14 @@ export const ProgressBar: React.FC<{ progressBarWidth: number }> = ({
   const progressBarWidthPercentage = progressBarWidth * 100;
 
   return (
-    <div>
-      <div className="progress-bar-container">
-        <div
-          className="progress-bar"
-          style={{
-            width: `${progressBarWidthPercentage}%`,
-            backgroundColor: getProgressBarColor(progressBarWidthPercentage),
-          }}
-        />
-      </div>
+    <div className="progress-bar-container">
+      <div
+        className="progress-bar"
+        style={{
+          width: `${progressBarWidthPercentage}%`,
+          backgroundColor: getProgressBarColor(progressBarWidthPercentage),
+        }}
+      />
     </div>
   );
 };

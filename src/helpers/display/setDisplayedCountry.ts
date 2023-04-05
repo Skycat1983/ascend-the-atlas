@@ -12,10 +12,14 @@ export const setDisplayedCountry = (
       const { displayedCount } = state.gameVariables;
       const { displayedOptions } = state.gameDisplay;
 
-      console.warn(displayedOptions, displayedCount);
+      // console.warn(displayedOptions, displayedCount);
 
       if (!displayedOptions || displayedOptions.length === 0) {
         throw new Error("No available displayedOptions in setDisplayedCountry");
+      }
+
+      if (displayedOptions.some((option) => option === undefined)) {
+        throw new Error("Undefined values detected in setDisplayedCountry");
       }
 
       if (!displayedCount || displayedCount === 0) {
@@ -39,8 +43,8 @@ export const setDisplayedCountry = (
         type: "SET_DISPLAYED_COUNTRY",
         payload: displayedOptions[chosenCountry],
       });
-      //! we always reach here. but sometimes the displayedOptions[chosenCountry] is undefined. also, sometimes it isn't undefined, but the country flag still does now load and the clg of displayedCountry is null
-      console.warn("FAIL????", displayedOptions[chosenCountry]);
+      // //! we always reach here. but sometimes the displayedOptions[chosenCountry] is undefined. also, sometimes it isn't undefined, but the country flag still does now load and the clg of displayedCountry is null
+      // console.warn("FAIL????", displayedOptions[chosenCountry]);
 
       resolve(displayedOptions[chosenCountry]);
     } catch (error) {

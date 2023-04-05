@@ -28,7 +28,9 @@ const Flag: React.FC<FlagProps> = ({ displayedCountry }) => {
     }
   };
 
-  console.log("fail :>> ", displayedCountry);
+  if (!displayedCountry || displayedCountry === null) {
+    console.log("%cshould not see this: in FLAG component", "color: red;");
+  }
 
   return (
     <div className="flag-container">

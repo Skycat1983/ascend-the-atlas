@@ -1,15 +1,23 @@
 import { RootState, AppDispatch } from "../types/rootInterfaces";
-import { setDisplayedOptions } from "../dispatchHelpers/display/setDisplayedOptions";
-import { setDisplayedCountry } from "../dispatchHelpers/display/setDisplayedCountry";
-import { reconfigAvailability } from "../dispatchHelpers/reconfigAvailability";
+import { setDisplayedOptions } from "../helpers/display/setDisplayedOptions";
+import { setDisplayedCountry } from "../helpers/display/setDisplayedCountry";
+import { reconfigAvailability } from "../helpers/reconfigAvailability";
 
 export const prepNextQuestion = async (
   state: RootState,
   dispatch: AppDispatch
 ): Promise<void> => {
   try {
+    console.log(
+      "Before setDisplayedOptions:",
+      state.gameDisplay.displayedOptions
+    );
     const getDisplayOptions = await setDisplayedOptions(state, dispatch);
-    //! this getDisplayCountry below is not always running
+    console.log("After setDisplayedOptions:", getDisplayOptions);
+    console.log(
+      "Before setDisplayedCountry:",
+      state.gameDisplay.displayedCountry
+    );
     const getDisplayCountry = await setDisplayedCountry(
       {
         ...state,
@@ -20,6 +28,7 @@ export const prepNextQuestion = async (
       },
       dispatch
     );
+    console.log("After setDisplayedCountry:", getDisplayCountry);
     // console.log("pass");
     await reconfigAvailability(
       {

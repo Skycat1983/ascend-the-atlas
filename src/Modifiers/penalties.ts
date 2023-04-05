@@ -1,6 +1,7 @@
 import {
   DisplayedCountryModifier,
   ReducerStateModifier,
+  Modifier,
 } from "../types/modifierTypes";
 
 //!---- these modifiers are for the flag ----!//
@@ -21,8 +22,9 @@ import {
 //   },
 // };
 
-export const upsideDownFlagModifier: DisplayedCountryModifier = {
+export const upsideDownFlagModifier: Modifier = {
   name: "Southern Hemisphere",
+  rarity: 1,
   description: "The flag displayed has a chance to be upside down",
   multiplier: 3,
   url: "https://img.icons8.com/color/512/sun-star.png",
@@ -42,8 +44,10 @@ export const upsideDownFlagModifier: DisplayedCountryModifier = {
   },
 };
 
-export const sidewaysFlagModifier: DisplayedCountryModifier = {
+export const sidewaysFlagModifier: Modifier = {
   name: "Portait",
+  rarity: 1,
+
   description: "The flag displayed has a chance to be sideways",
   multiplier: 3,
   url: "https://img.icons8.com/color/512/portrait.png",
@@ -63,8 +67,10 @@ export const sidewaysFlagModifier: DisplayedCountryModifier = {
   },
 };
 
-export const colourlessFlagModifier: DisplayedCountryModifier = {
+export const colourlessFlagModifier: Modifier = {
   name: "Colourblind",
+  rarity: 1,
+
   description: "The flag displayed has a chance to have colours swapped",
   multiplier: 2,
   url: "https://img.icons8.com/color/512/glasses-case.png",
@@ -85,8 +91,10 @@ export const colourlessFlagModifier: DisplayedCountryModifier = {
   },
 };
 
-export const mirrorHorizontalModifier: DisplayedCountryModifier = {
+export const mirrorHorizontalModifier: Modifier = {
   name: "Shard Slice",
+  rarity: 2,
+
   description: "The flag displayed will be mirrored horizontally",
   multiplier: 4,
   url: "https://img.icons8.com/fluency/512/mirror.png",
@@ -109,6 +117,8 @@ export const mirrorHorizontalModifier: DisplayedCountryModifier = {
 
 export const mirrorVerticalModifier = {
   name: "Shard Slash",
+  rarity: 2,
+
   description: "The flag displayed will be mirrored vertically",
   multiplier: 4,
   url: "https://img.icons8.com/color/512/mirror.png",
@@ -129,8 +139,10 @@ export const mirrorVerticalModifier = {
   },
 };
 
-export const flagDescription: DisplayedCountryModifier = {
+export const flagDescription: Modifier = {
   name: "Bookworm",
+  rarity: 2,
+
   description: "The flag has a chance to be text-based",
   multiplier: 2,
   url: "https://img.icons8.com/external-flat-icons-pack-pongsakorn-tan/512/external-apple-back-to-school-flat-icons-pack-pongsakorn-tan.png",
@@ -154,8 +166,10 @@ export const flagDescription: DisplayedCountryModifier = {
 
 //!---- these modifiers are for the country names ----!//
 
-export const differentLanguageNameModifier: DisplayedCountryModifier = {
+export const differentLanguageNameModifier: Modifier = {
   name: "Phrasebook",
+  rarity: 3,
+
   description: "The country name has a chance to be in a different language",
   multiplier: 5,
   url: "https://img.icons8.com/color/512/translate-text.png",
@@ -185,8 +199,10 @@ function shuffleString(str: string): string {
   return arr.join("");
 }
 
-export const mixUpLettersModifier: DisplayedCountryModifier = {
+export const mixUpLettersModifier: Modifier = {
   name: "Scrabble piece",
+  rarity: 3,
+
   description: "the country name has a chance to be mixed up",
   multiplier: 3,
   url: "https://img.icons8.com/external-flaticons-lineal-color-flat-icons/512/external-scrabble-edutainment-flaticons-lineal-color-flat-icons.png",
@@ -201,8 +217,10 @@ export const mixUpLettersModifier: DisplayedCountryModifier = {
   },
 };
 
-export const showCapitalCityInsteadModifier: DisplayedCountryModifier = {
+export const showCapitalCityInsteadModifier: Modifier = {
   name: "Souvenir",
+  rarity: 3,
+
   description:
     "the country name has a chance to be replaced with the capital city",
   multiplier: 5,
@@ -223,8 +241,10 @@ export const showCapitalCityInsteadModifier: DisplayedCountryModifier = {
 
 //!---- these mods affect the state
 
-export const addAll: ReducerStateModifier = {
+export const addAll: Modifier = {
   name: "Globe",
+  rarity: 2,
+
   description: "add all countries to the multiple choice options",
   multiplier: 10,
   url: "https://img.icons8.com/plasticine/512/globe-earth.png",
@@ -234,8 +254,10 @@ export const addAll: ReducerStateModifier = {
   payload: (state: any) => state.unavailableRegions,
 };
 
-export const addOneOption: ReducerStateModifier = {
+export const addOneOption: Modifier = {
   name: "Journals",
+  rarity: 5,
+
   description: "add an extra country to the multiple choice options",
   multiplier: 3,
   url: "https://img.icons8.com/fluency/512/journal.png",
@@ -246,8 +268,9 @@ export const addOneOption: ReducerStateModifier = {
   payload: (state: any) => state.optionsCount + 1,
 };
 
-export const minusOneOption: ReducerStateModifier = {
+export const minusOneOption: Modifier = {
   name: "Journal",
+  rarity: 5,
   description: "remove a multiple choice option",
   multiplier: 3,
   url: "https://img.icons8.com/fluency/512/journal.png",
@@ -267,6 +290,8 @@ const createRegionModifier = (
 ) => ({
   name,
   description,
+  rarity: 5,
+
   // target: "state",
   multiplier: 3,
   reducer: "dataState",

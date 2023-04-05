@@ -1,7 +1,7 @@
 import { AppDispatch, RootState } from "../types/rootInterfaces";
-import { setScore } from "../dispatchHelpers/game/setScore";
-import { setLevel } from "../dispatchHelpers/game/setLevel";
-import { setProgressBar } from "../dispatchHelpers";
+import { setScore } from "../helpers/game/setScore";
+import { setLevel } from "../helpers/game/setLevel";
+import { setProgressBar } from "../helpers";
 
 export const answerHandler = async (
   e: any,

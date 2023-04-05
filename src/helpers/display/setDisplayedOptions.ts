@@ -24,6 +24,10 @@ export const setDisplayedOptions = (
         );
       }
 
+      if (availableCountries.some((country) => country === undefined)) {
+        throw new Error("Undefined values detected in setDisplayedOptions");
+      }
+
       let displayedOptions: Country[] = [];
       let i = 0;
       // while loop prevents infinite loop

@@ -134,6 +134,7 @@ export const initialNullState: RootState = {
     multiplier: 1,
     displayedCount: 0,
     modifierInterval: 0,
+    timer: 5,
   },
 };
 
@@ -142,6 +143,7 @@ export const testState = {
     multiplier: 1,
     displayedCount: 2,
     modifierInterval: 2,
+    timer: 5,
   },
   gameData: {
     availableRegions: initAvailableRegions,

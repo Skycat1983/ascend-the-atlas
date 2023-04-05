@@ -16,6 +16,8 @@ export const gameVariablesReducer = (
       return { ...state, displayedCount: action.payload };
     case "SET_MODIFIER_INTERVAL":
       return { ...state, modifierInterval: action.payload };
+    case "SET_TIMER_INTERVAL":
+      return { ...state, timer: action.payload };
     default:
       return state;
   }
