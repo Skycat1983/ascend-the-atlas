@@ -1,15 +1,8 @@
-import React, { useEffect, useMemo, useReducer, useState } from "react";
+import { useEffect, useReducer, useState } from "react";
 import "@total-typescript/ts-reset";
 import "../App.css";
 import { testState, initialNullState, defaultFetch } from "../Utils/consts";
-import {
-  gameStateReducer,
-  gameVariablesReducer,
-  gameModifiersReducer,
-  gameDisplayReducer,
-  gameDataReducer,
-  fetchReducer,
-} from "../reducers";
+import rootReducer from "../reducers/rootReducer";
 import {
   setFetch,
   setAvailableCountries,
@@ -19,36 +12,18 @@ import {
   setDisplayedCountry,
 } from "../helpers";
 import ProgressBar from "../Components/ProgressBar/ProgressBar";
-import { Country, RootState } from "../types/rootInterfaces";
+import { RootState } from "../types/rootInterfaces";
 import { answerHandler } from "../handlers/answerHandler";
 import { prepNextQuestion } from "../handlers/questionHandler";
-import Modal from "../Components/Modal";
-import { getProgressBarColor } from "../Utils/getProgressBarColor";
 import MultipleChoices from "../Components/MultipleChoices/MultipleChoices";
 import Flag from "../Components/Flag/Flag";
-import { thresholdHandler } from "../handlers/thresholdHandler";
+import {
+  handleModifierSelection,
+  modalHandler,
+} from "../handlers/modalHandler";
 import Countdown from "../Components/Countdown/Countdown";
-
-// this takes an object of reducers and returns a reducer that can call and handle each of them
-function combineReducers(reducers: any) {
-  return (state: any, action: any) => {
-    const nextState: any = {};
-    for (const key in reducers) {
-      nextState[key] = reducers[key](state[key], action);
-    }
-    return nextState as RootState;
-  };
-}
-
-// this is the root reducer that will be passed to the useReducer hook
-const rootReducer = combineReducers({
-  fetchState: fetchReducer,
-  gameState: gameStateReducer,
-  gameVariables: gameVariablesReducer,
-  gameModifiers: gameModifiersReducer,
-  gameDisplay: gameDisplayReducer,
-  gameData: gameDataReducer,
-});
+import Modal from "../Components/Modal/Modal";
+import ScoreLevel from "../Components/Score&Level/ScoreLevel";
 
 function FlagGame() {
   // the reducer state with all its deconstructed values below
@@ -60,7 +35,6 @@ function FlagGame() {
   const [buttonText, setButtonText] = useState("START");
   const [isCountingDown, setIsCountingDown] = useState(false);
   const [reset, setReset] = useState(false);
-  // const [action, setAction] = useState<"start" | "stop" | "reset">("start");
   const {
     gameState,
     gameDisplay,
@@ -70,6 +44,7 @@ function FlagGame() {
     fetchState,
   } = state;
   const { result, errors, loading } = fetchState;
+  const { isOpen, content } = state.modalState;
   const { level, score, progressBarWidth } = gameState;
   const { displayedCountry, displayedOptions, displayedModifiers } =
     gameDisplay;
@@ -134,7 +109,7 @@ function FlagGame() {
     if (validAnswer) {
       console.log("valid answer");
       setButtonText("NEXT");
-      thresholdHandler(state, dispatch);
+      modalHandler(state, dispatch);
     } else {
       console.log("invalid answer ");
       // dispatch({ type: "INITIALISE_STATE", payload: testState });
@@ -144,17 +119,6 @@ function FlagGame() {
     signalTimerReset();
     prepNextQuestion(state, dispatch);
   };
-
-  // if (
-  //   availableCountries &&
-  //   availableCountries.length > 0 &&
-  //   (displayedCountry === null || displayedCountry === undefined)
-  // ) {
-  //   console.warn(
-  //     "displayedCountry not showing. main page end",
-  //     displayedCountry
-  //   );
-  // }
 
   const handleCallback = (remainingTime: number) => {
     console.log("Remaining time:", remainingTime);
@@ -167,6 +131,10 @@ function FlagGame() {
   const signalTimerReset = () => {
     setReset(!reset);
     setIsCountingDown(false);
+  };
+
+  const closeModal = () => {
+    dispatch({ type: "CLOSE_MODAL" });
   };
 
   return (
@@ -183,12 +151,11 @@ function FlagGame() {
         </button>
         <button onClick={signalTimerReset}>RESET</button>
       </div>
-      <div>
-        Level: {level} Score: {score}
-      </div>
       {progressBarWidth && (
         <ProgressBar progressBarWidth={progressBarWidth}></ProgressBar>
       )}
+      <ScoreLevel score={score} level={level} />
+
       {displayedCountry && <Flag displayedCountry={displayedCountry}></Flag>}
 
       {displayedOptions && displayedOptions.length > 0 && (
@@ -197,69 +164,17 @@ function FlagGame() {
           handleClick={handleClick}
         ></MultipleChoices>
       )}
-      {/* <button value="" onClick={handleClick}>
-        {buttonText}
-      </button> */}
-      {/* {!gameReady && <button onClick={handleClick}>NEXT</button>} */}
+      {isOpen && content && (
+        <Modal
+          modifiers={content}
+          closeModal={closeModal}
+          onModifierSelection={(selectedModifier) =>
+            handleModifierSelection(selectedModifier, dispatch)
+          }
+        />
+      )}
     </>
   );
 }
 
 export default FlagGame;
-
-{
-  /* <div className="flag-container">
-        {displayedCountry && (
-          <img
-            key={displayedCountry.cca3}
-            src={displayedCountry.flags.png}
-            alt={displayedCountry.name.common}
-            // className={`${displayedCountry.classname}`}
-          />
-        )}
-      </div> */
-}
-
-{
-  /* <div className="relic-container">
-        {state.relics.map((relic: any, index: number) => {
-          return <img src={relic} alt="relic" key={index} className="relic" />;
-        })}
-      </div> */
-}
-
-{
-  /* <div className="progress-bar-container">
-        <div
-          className="progress-bar"
-          style={{
-            width: progressBarWidth,
-            backgroundColor: getProgressBarColor(
-              (((state.level - 1) % state.modifierInterval) /
-                state.modifierInterval) *
-                100
-            ),
-          }}
-        />
-      </div> */
-}
-
-{
-  /* <Modal
-          isOpen={state.isModalOpen}
-          closeModal={() => dispatch({ type: "TOGGLE_MODAL", payload: false })}
-          onModifierSelection={handleModifierSelection}
-          availableModifiers={state.availableModifiers}
-        /> */
-}
-
-// <React.Fragment
-//   key={`${modifiedCountry.cca3}-${index}`}>
-//   <button className="country-button" onClick={handleClick}>
-//     {modifiedCountry.name.common}
-//   </button>
-// </React.Fragment>
-
-// const initMultipleChoice = setDisplayedChoices(state, dispatch);
-// const initSubject = setDisplayedCountry(state, dispatch);
-// const initAvailability = shiftDataAvailability(state, dispatch);

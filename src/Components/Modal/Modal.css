@@ -1,0 +1,232 @@
+.modal-backdrop {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background-color: rgba(0, 0, 0, 0.5);
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+.modal {
+  background-color: white;
+  padding: 20px;
+  border-radius: 4px;
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+
+.legendary {
+  display: flex;
+  align-items: center;
+  justify-content: flex-start;
+  height: 20px;
+  padding: 0 10px;
+  border: none;
+  background-color: rgb(255, 210, 63);
+  position: relative;
+  /* Add position: relative to the button */
+}
+
+.legendary:hover::before {
+  /* Add a tooltip on hover */
+  content: attr(data-tooltip);
+  /* Set the tooltip text to the value of data-tooltip attribute */
+  position: absolute;
+  top: 100%;
+  left: 50%;
+  transform: translateX(-50%);
+  padding: 4px 8px;
+  background-color: rgba(0, 0, 0, 0.7);
+  color: #fff;
+  border-radius: 4px;
+  font-size: 14px;
+  white-space: nowrap;
+  z-index: 1000;
+}
+
+.epic {
+  display: flex;
+  align-items: center;
+  justify-content: flex-start;
+  height: 20px;
+  padding: 0 10px;
+  border: none;
+  background-color: rgb(255, 91, 252);
+  position: relative;
+  /* Add position: relative to the button */
+}
+
+.epic:hover::before {
+  /* Add a tooltip on hover */
+  content: attr(data-tooltip);
+  /* Set the tooltip text to the value of data-tooltip attribute */
+  position: absolute;
+  top: 100%;
+  left: 50%;
+  transform: translateX(-50%);
+  padding: 4px 8px;
+  background-color: rgba(0, 0, 0, 0.7);
+  color: #fff;
+  border-radius: 4px;
+  font-size: 14px;
+  white-space: nowrap;
+  z-index: 1000;
+}
+
+.rare {
+  display: flex;
+  align-items: center;
+  justify-content: flex-start;
+  height: 20px;
+  padding: 0 10px;
+  border: none;
+  background-color: rgb(255, 126, 126);
+  position: relative;
+  /* Add position: relative to the button */
+}
+
+.rare:hover::before {
+  /* Add a tooltip on hover */
+  content: attr(data-tooltip);
+  /* Set the tooltip text to the value of data-tooltip attribute */
+  position: absolute;
+  top: 100%;
+  left: 50%;
+  transform: translateX(-50%);
+  padding: 4px 8px;
+  background-color: rgba(0, 0, 0, 0.7);
+  color: #fff;
+  border-radius: 4px;
+  font-size: 14px;
+  white-space: nowrap;
+  z-index: 1000;
+}
+
+.uncommon {
+  display: flex;
+  align-items: center;
+  justify-content: flex-start;
+  height: 20px;
+  padding: 0 10px;
+  border: none;
+  background-color: rgb(143, 141, 255);
+  position: relative;
+}
+
+.uncommon:hover::before {
+  content: attr(data-tooltip);
+  position: absolute;
+  top: 100%;
+  left: 50%;
+  transform: translateX(-50%);
+  padding: 4px 8px;
+  background-color: rgba(0, 0, 0, 0.7);
+  color: #fff;
+  border-radius: 4px;
+  font-size: 14px;
+  white-space: nowrap;
+  z-index: 1000;
+}
+
+.common {
+  display: flex;
+  align-items: center;
+  justify-content: flex-start;
+  height: 20px;
+  padding: 0 10px;
+  border: none;
+  background-color: rgb(212, 212, 212);
+  position: relative;
+}
+
+.common:hover::before {
+  content: attr(data-tooltip);
+  position: absolute;
+  top: 100%;
+  left: 50%;
+  transform: translateX(-50%);
+  padding: 4px 8px;
+  background-color: rgba(0, 0, 0, 0.7);
+  color: #fff;
+  border-radius: 4px;
+  font-size: 14px;
+  white-space: nowrap;
+  z-index: 1000;
+}
+
+.legendary img {
+  width: 20px;
+  height: 20px;
+  object-fit: contain;
+  margin-right: 10px;
+}
+
+.legendary span {
+  margin: 0;
+  padding: 0;
+  font-size: 16px;
+}
+
+.epic img {
+  width: 20px;
+  height: 20px;
+  object-fit: contain;
+  margin-right: 10px;
+}
+
+.epic span {
+  margin: 0;
+  padding: 0;
+  font-size: 16px;
+}
+
+
+.rare img {
+  width: 20px;
+  height: 20px;
+  object-fit: contain;
+  margin-right: 10px;
+}
+
+.rare span {
+  margin: 0;
+  padding: 0;
+  font-size: 16px;
+}
+
+.uncommon img {
+  width: 20px;
+  height: 20px;
+  object-fit: contain;
+  margin-right: 10px;
+}
+
+.uncommon span {
+  margin: 0;
+  padding: 0;
+  font-size: 16px;
+}
+
+.common img {
+  width: 20px;
+  height: 20px;
+  object-fit: contain;
+  margin-right: 10px;
+}
+
+.common span {
+  margin: 0;
+  padding: 0;
+  font-size: 16px;
+}
+
+.relic {
+  width: 20px;
+  height: 20px;
+  align-self: left;
+  display: inline-block;
+}

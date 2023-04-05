@@ -27,11 +27,22 @@ import {
   addEasternAsia,
   addMicronesia,
   addCentralAsia,
-} from "../Modifiers/penalties";
+} from "../modifiers/penalties";
 import { getRandomWeighted } from "../helpers/modifiers/getRandomWeighted";
 import { Modifier } from "../types/modifierTypes";
+import { setModal } from "../helpers/modal/setModal";
+import { AppDispatch, RootState } from "../types/rootInterfaces";
 
-export const thresholdHandler = async (state: any, dispatch: any) => {
+export const handleModifierSelection = (
+  selectedModifier: Modifier,
+  dispatch: AppDispatch
+) => {
+  // Apply the selected modifier and perform other necessary actions.
+  // After that, close the modal.
+  dispatch({ type: "CLOSE_MODAL" });
+};
+
+export const modalHandler = async (state: RootState, dispatch: AppDispatch) => {
   const { level } = state.gameState;
   const { modifierInterval } = state.gameVariables;
   const { availableModifiers } = state.gameModifiers;
@@ -41,7 +52,8 @@ export const thresholdHandler = async (state: any, dispatch: any) => {
       "eligibility for penalty confirmed. availableModifiers:",
       availableModifiers
     );
-    let modifiersForDisplay = await getRandomWeighted(availableModifiers, 3);
+    const modifiersForDisplay = await getRandomWeighted(availableModifiers, 3);
+    setModal(modifiersForDisplay, dispatch);
     console.warn("modifiersForDisplay", modifiersForDisplay);
   }
 };

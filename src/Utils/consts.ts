@@ -29,7 +29,7 @@ import {
   addEasternAsia,
   addMicronesia,
   addCentralAsia,
-} from "../Modifiers/penalties";
+} from "../modifiers/penalties";
 import { ReducerState } from "react";
 import { RootState } from "../types/rootInterfaces";
 
@@ -110,6 +110,11 @@ export const initialNullState: RootState = {
     errors: null,
     loading: false,
   },
+  modalState: {
+    isOpen: false,
+    content: null,
+  },
+
   gameState: {
     level: 1,
     score: 0,

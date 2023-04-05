@@ -4,3 +4,4 @@ export { gameModifiersReducer } from "./modifiersReducer";
 export { gameDisplayReducer } from "./displayReducer";
 export { gameDataReducer } from "./dataReducer";
 export { fetchReducer } from "./fetchReducer";
+export { modalReducer } from "./modalReducer";

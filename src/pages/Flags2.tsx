@@ -4,7 +4,7 @@ import useFetch from "../CustomHooks/useFetch";
 import getRndInt from "../Utils/getRndInt";
 import "../App.css";
 import { initialState } from "../Utils/consts";
-import Modal from "../Components/Modal";
+import Modal from "../Components/Modal/Modal";
 import { getProgressBarColor } from "../Utils/getProgressBarColor";
 
 //todo: split reducer into multiple reducers. perhaps gameState, gameVariables, gameModifiers, countryData, ModalState etc
