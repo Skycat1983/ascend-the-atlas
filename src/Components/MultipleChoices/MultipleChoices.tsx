@@ -14,13 +14,10 @@ function MultipleChoices({
     <div className="buttons-container">
       {displayedOptions &&
         displayedOptions.map((country: Country, index: number) => {
-          // const modifiedCountry = applyModifiers(country);
           return (
-            // <>
             <button key={country.cca3} onClick={handleClick} className="">
               {displayedOptions[index].name.common}
             </button>
-            // </>
           );
         })}
     </div>

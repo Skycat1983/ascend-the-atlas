@@ -1,5 +1,6 @@
 import React from "react";
-import SevenSegmentDisplay from "../SegmentDisplay/SegmentDisplay";
+// import SevenSegmentDisplay from "../SegmentDisplay/SegmentDisplay";
+// import SSD from "../SegmentDisplay/SSD";
 
 type Props = {
   score: number;
@@ -11,6 +12,7 @@ const ScoreLevel = (props: Props) => {
   return (
     <div>
       {/* <SevenSegmentDisplay number={level} /> */}
+      {/* <SSD /> */}
       Level: {level} Score: {score}
     </div>
   );

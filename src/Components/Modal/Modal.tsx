@@ -2,6 +2,13 @@ import React from "react";
 import "./Modal.css";
 import { Modifier } from "../../types/modifierTypes";
 import { getRarityClassName } from "../../Utils/getRarityClassname";
+import { AppDispatch } from "../../types/rootInterfaces";
+
+// type ModalProps = {
+//   modifiers: Modifier[];
+//   dispatch: AppDispatch;
+//   closeModal: () => void;
+// };
 
 type ModalProps = {
   modifiers: Modifier[];
@@ -12,7 +19,7 @@ type ModalProps = {
 const Modal: React.FC<ModalProps> = ({
   modifiers,
   onModifierSelection,
-  // closeModal,
+  closeModal,
 }) => {
   return (
     <div className="modal-backdrop">

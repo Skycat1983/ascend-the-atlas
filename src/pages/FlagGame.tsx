@@ -17,13 +17,14 @@ import { answerHandler } from "../handlers/answerHandler";
 import { prepNextQuestion } from "../handlers/questionHandler";
 import MultipleChoices from "../Components/MultipleChoices/MultipleChoices";
 import Flag from "../Components/Flag/Flag";
+import Countdown from "../Components/Countdown/Countdown";
+import Modal from "../Components/Modal/Modal";
+import ScoreLevel from "../Components/Score&Level/ScoreLevel";
 import {
   handleModifierSelection,
   modalHandler,
 } from "../handlers/modalHandler";
-import Countdown from "../Components/Countdown/Countdown";
-import Modal from "../Components/Modal/Modal";
-import ScoreLevel from "../Components/Score&Level/ScoreLevel";
+import { addModifier } from "../helpers/modifiers/addModifier";
 
 function FlagGame() {
   // the reducer state with all its deconstructed values below
@@ -107,9 +108,12 @@ function FlagGame() {
     // console.log("e>>>", e);
     const validAnswer = await answerHandler(e, state, dispatch);
     if (validAnswer) {
-      console.log("valid answer");
+      if (level % modifierInterval === 0) {
+        const getChoice = await modalHandler(state, dispatch);
+        // const configModifiers = await addModifier(getChoice, dispatch);
+        // const reconfigure = await reconfigAvailability(state, dispatch);
+      }
       setButtonText("NEXT");
-      modalHandler(state, dispatch);
     } else {
       console.log("invalid answer ");
       // dispatch({ type: "INITIALISE_STATE", payload: testState });
