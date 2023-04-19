@@ -1,4 +1,4 @@
-import { initialNullState } from "../Utils/consts";
+import { initialNullState } from "../utils/consts";
 import { DataState, DataAction } from "../types/dataTypes";
 
 export const gameDataReducer = (state: DataState, action: DataAction) => {

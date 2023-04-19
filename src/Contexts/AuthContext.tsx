@@ -1,6 +1,6 @@
 import { createContext, useEffect, useState } from "react";
 import { User } from "../types/authAndFormTypes";
-import { defaultContext } from "../Utils/consts";
+import { defaultContext } from "../utils/consts";
 import {
   AuthContextProviderProps,
   AuthContextType,

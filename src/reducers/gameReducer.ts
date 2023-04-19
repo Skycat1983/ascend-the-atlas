@@ -1,4 +1,4 @@
-import { initialNullState } from "../Utils/consts";
+import { initialNullState } from "../utils/consts";
 import { GameAction, GameState } from "../types/gameTypes";
 
 export const gameStateReducer = (state: GameState, action: GameAction) => {

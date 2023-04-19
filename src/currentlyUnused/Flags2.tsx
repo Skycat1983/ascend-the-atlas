@@ -1,11 +1,11 @@
 //@ts-nocheck
 import React, { useEffect, useMemo, useReducer, useState } from "react";
-import useFetch from "../CustomHooks/useFetch";
-import getRndInt from "../Utils/getRndInt";
+import useFetch from "../customHooks/useFetch";
+import getRndInt from "../utils/getRndInt";
 import "../App.css";
-import { initialState } from "../Utils/consts";
+import { initialState } from "../utils/consts";
 import Modal from "../Components/Modal/Modal";
-import { getProgressBarColor } from "../Utils/getProgressBarColor";
+import { getProgressBarColor } from "../utils/getProgressBarColor";
 
 //todo: split reducer into multiple reducers. perhaps gameState, gameVariables, gameModifiers, countryData, ModalState etc
 

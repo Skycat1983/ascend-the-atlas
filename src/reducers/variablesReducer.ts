@@ -1,4 +1,4 @@
-import { initialNullState } from "../Utils/consts";
+import { initialNullState } from "../utils/consts";
 import { VariablesAction, VariablesState } from "../types/variablesTypes";
 
 export const gameVariablesReducer = (

@@ -4,9 +4,8 @@ import { Route, Routes } from "react-router-dom";
 import Home from "./pages/Home";
 import Start from "./pages/Start";
 import Navbar from "./Components/Navbar";
-import Item from "./pages/Item";
 import FlagGame from "./pages/FlagGame";
-import Cities from "./pages/Cities";
+import Cities from "./currentlyUnused/Cities";
 import { AuthContextProvider } from "./Contexts/AuthContext";
 import Login from "./pages/Login";
 import Signup from "./pages/Signup";
@@ -23,8 +22,6 @@ function App() {
             <Route path="flags" element={<FlagGame />} />
             <Route path="cities" element={<Cities />} />
           </Route>
-          {/* <Route path="/about" element={<About />} /> */}
-          {/* <Route path="item/:id/:name" element={<Item />} /> */}
           <Route path="login" element={<Login />} />
           <Route path="signup" element={<Signup />} />
         </Routes>
@@ -34,6 +31,3 @@ function App() {
 }
 
 export default App;
-
-//? from json
-// "build": "react-scripts build",

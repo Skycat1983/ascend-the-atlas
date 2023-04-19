@@ -1,4 +1,4 @@
-import getRndInt from "../../Utils/getRndInt";
+import getRndInt from "../../utils/getRndInt";
 import { RootState, Country } from "../../types/rootInterfaces";
 import { DisplayAction } from "../../types/displayTypes";
 

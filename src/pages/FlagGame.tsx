@@ -1,30 +1,25 @@
 import { useEffect, useReducer, useState } from "react";
 // import "@total-typescript/ts-reset";
 import "../App.css";
-import { testState, initialNullState, defaultFetch } from "../Utils/consts";
+import { testState, initialNullState, defaultFetch } from "../utils/consts";
 import rootReducer from "../reducers/rootReducer";
-import {
-  setFetch,
-  setAvailableCountries,
-  setDataAvailability,
-  reconfigAvailability,
-  setDisplayedOptions,
-  setDisplayedCountry,
-} from "../helpers";
+import { setFetch, setAvailableCountries } from "../helpers";
 import ProgressBar from "../Components/ProgressBar/ProgressBar";
 import { RootState } from "../types/rootInterfaces";
-import { answerHandler } from "../handlers/answerHandler";
+import { handleClick } from "../handlers/handleClick";
 import { questionHandler } from "../handlers/questionHandler";
 import MultipleChoices from "../Components/MultipleChoices/MultipleChoices";
 import Flag from "../Components/Flag/Flag";
 import Countdown from "../Components/Countdown/Countdown";
 import Modal from "../Components/Modal/Modal";
+import { closeModal } from "../helpers/modal/closeModal";
 import ScoreLevel from "../Components/Score&Level/ScoreLevel";
+import { handleModifierSelection } from "../handlers/modalHandler";
 import {
-  handleModifierSelection,
-  modalHandler,
-} from "../handlers/modalHandler";
-import { addModifier } from "../helpers/modifiers/addModifier";
+  handleCallback,
+  toggleCountdown,
+  signalTimerReset,
+} from "../handlers/timerHandlers";
 
 function FlagGame() {
   // the reducer state with all its deconstructed values below
@@ -33,7 +28,6 @@ function FlagGame() {
     initialNullState as RootState
   );
   const [gameReady, setGameReady] = useState(false);
-  const [buttonText, setButtonText] = useState("START");
   const [isCountingDown, setIsCountingDown] = useState(false);
   const [reset, setReset] = useState(false);
   const {
@@ -50,12 +44,7 @@ function FlagGame() {
   const { displayedCountry, displayedOptions, displayedModifiers } =
     gameDisplay;
   const { multiplier, displayedCount, modifierInterval, timer } = gameVariables;
-  const {
-    availableCountries,
-    availableRegions,
-    unavailableCountries,
-    unavailableRegions,
-  } = gameData;
+  const { availableCountries, availableRegions } = gameData;
   const { availableModifiers, appliedModifiers } = gameModifiers;
   // todo: modal
 
@@ -101,42 +90,6 @@ function FlagGame() {
     }
   }, [gameReady]);
 
-  const handleClick = async (e: any) => {
-    const validAnswer = await answerHandler(e, state, dispatch);
-    if (validAnswer) {
-      console.log("Valid answer");
-      if (level % modifierInterval === 0) {
-        const getChoice = await modalHandler(state, dispatch);
-        const configModifiers = await addModifier(getChoice, dispatch);
-        // const reconfigure = await reconfigAvailability(state, dispatch);
-      }
-      setButtonText("NEXT");
-    } else {
-      console.log("invalid answer ");
-      setButtonText("RESTART");
-    }
-    dispatch({ type: "SET_TIMER_INTERVAL", payload: timer });
-    signalTimerReset();
-    questionHandler(state, dispatch);
-  };
-
-  const handleCallback = (remainingTime: number) => {
-    console.log("Remaining time:", remainingTime);
-  };
-
-  const toggleCountdown = () => {
-    setIsCountingDown(!isCountingDown);
-  };
-
-  const signalTimerReset = () => {
-    setReset(!reset);
-    setIsCountingDown(false);
-  };
-
-  const closeModal = () => {
-    dispatch({ type: "CLOSE_MODAL" });
-  };
-
   useEffect(() => {
     console.warn("Updated state", gameData, gameDisplay, gameModifiers);
   }, [state]);
@@ -150,10 +103,12 @@ function FlagGame() {
           cb={handleCallback}
           reset={reset}
         />
-        <button onClick={() => toggleCountdown()}>
+        <button
+          onClick={() => toggleCountdown(isCountingDown, setIsCountingDown)}
+        >
           {isCountingDown ? "STOP" : "START"}
         </button>
-        <button onClick={signalTimerReset}>RESET</button>
+        <button onClick={() => signalTimerReset}>RESET</button>
       </div>
       {progressBarWidth && (
         <ProgressBar progressBarWidth={progressBarWidth}></ProgressBar>
@@ -165,13 +120,23 @@ function FlagGame() {
       {displayedOptions && displayedOptions.length > 0 && (
         <MultipleChoices
           displayedOptions={displayedOptions}
-          handleClick={handleClick}
+          handleClick={(event) =>
+            handleClick(
+              event,
+              state,
+              dispatch,
+              level,
+              modifierInterval,
+              timer,
+              () => signalTimerReset(reset, setReset, setIsCountingDown) // Passing a function that calls signalTimerReset
+            )
+          }
         ></MultipleChoices>
       )}
       {isOpen && content && (
         <Modal
           modifiers={content}
-          closeModal={closeModal}
+          closeModal={() => closeModal(state, dispatch)}
           onModifierSelection={(selectedModifier) =>
             handleModifierSelection(selectedModifier, state, dispatch)
           }

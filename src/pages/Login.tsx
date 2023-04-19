@@ -1,7 +1,7 @@
 import React from "react";
 import Form from "../Components/MyForm";
-import useForm from "../CustomHooks/useForm";
-import { initialFormState } from "../Utils/consts";
+import useForm from "../customHooks/useForm";
+import { initialFormState } from "../utils/consts";
 
 type Props = {};
 

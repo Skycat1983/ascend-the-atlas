@@ -1,4 +1,4 @@
-import { initialNullState } from "../Utils/consts";
+import { initialNullState } from "../utils/consts";
 import { DisplayAction, DisplayState } from "../types/displayTypes";
 
 export const gameDisplayReducer = (

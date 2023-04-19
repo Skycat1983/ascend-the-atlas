@@ -1,7 +1,7 @@
 import React from "react";
 import "./Modal.css";
 import { Modifier } from "../../types/modifierTypes";
-import { getRarityClassName } from "../../Utils/getRarityClassname";
+import { getRarityClassName } from "../../utils/getRarityClassname";
 import { AppDispatch } from "../../types/rootInterfaces";
 
 // type ModalProps = {

@@ -1,6 +1,6 @@
 import React, { useContext } from "react";
-import useForm from "../CustomHooks/useForm";
-import { initialFormState, validation, onSubmit } from "../Utils/consts";
+import useForm from "../customHooks/useForm";
+import { initialFormState, validation, onSubmit } from "../utils/consts";
 import { AuthContext } from "../Contexts/AuthContext";
 import { useLocation } from "react-router-dom";
 
