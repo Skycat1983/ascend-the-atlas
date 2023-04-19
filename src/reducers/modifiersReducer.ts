@@ -12,6 +12,8 @@ export const gameModifiersReducer = (
       return { ...initialNullState.gameModifiers };
     case "SET_AVAILABLE_MODIFIERS":
       return { ...state, availableModifiers: action.payload };
+    case "SET_UNAVAILABLE_MODIFIERS":
+      return { ...state, unavailableModifiers: action.payload };
     case "ADD_APPLIED_MODIFIER":
       return {
         ...state,

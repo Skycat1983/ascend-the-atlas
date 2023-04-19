@@ -133,6 +133,7 @@ export const initialNullState: RootState = {
   },
   gameModifiers: {
     availableModifiers: [],
+    unavailableModifiers: [],
     appliedModifiers: [],
   },
   gameVariables: {

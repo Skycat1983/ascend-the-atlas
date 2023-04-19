@@ -4,12 +4,12 @@ import { setDisplayedCountry } from "../helpers/display/setDisplayedCountry";
 import { reconfigAvailability } from "../helpers/reconfigAvailability";
 import { DataState } from "../types/dataTypes";
 
-export const prepNextQuestion = async (
+export const questionHandler = async (
   state: RootState,
   dispatch: AppDispatch
 ): Promise<void> => {
   const { gameData } = state;
-  console.log("gameData in prepNextQuestion:", gameData);
+  // console.log("gameData in questionHandler:", gameData);
 
   try {
     const getDisplayOptions = await setDisplayedOptions(state, dispatch);

@@ -1,10 +1,11 @@
-import { AppDispatch } from "../../types/rootInterfaces";
+import { AppDispatch, RootState } from "../../types/rootInterfaces";
 import { Modifier } from "../../types/modifierTypes";
 
 export const setModal = (
   modifiersForDisplay: Modifier[],
+  state: RootState,
   dispatch: AppDispatch,
-  handleModalSelection: (selectedModifier: Modifier) => void
+  callback: (selectedModifier: Modifier) => void
 ) => {
   dispatch({ type: "OPEN_MODAL", payload: modifiersForDisplay });
 

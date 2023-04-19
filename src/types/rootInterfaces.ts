@@ -60,6 +60,14 @@ type KeysWithValueType<T, V> = {
 
 // type AvailableListKeys<T> = KeyToValueType<T>[keyof KeyToValueType<T>];
 
+// export type DynamicReconfig<T, S> = {
+//   state: S;
+//   dispatch: (action: ReconfigAction<T>) => void;
+//   objectToReconfig: T;
+//   availableListKey: KeysWithValueType<S, T[]>;
+//   unavailableListKey: KeysWithValueType<S, T[]>;
+// };
+
 export type DynamicReconfig<T, S> = {
   state: S;
   dispatch: (action: ReconfigAction<T>) => void;

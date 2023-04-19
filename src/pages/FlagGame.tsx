@@ -14,7 +14,7 @@ import {
 import ProgressBar from "../Components/ProgressBar/ProgressBar";
 import { RootState } from "../types/rootInterfaces";
 import { answerHandler } from "../handlers/answerHandler";
-import { prepNextQuestion } from "../handlers/questionHandler";
+import { questionHandler } from "../handlers/questionHandler";
 import MultipleChoices from "../Components/MultipleChoices/MultipleChoices";
 import Flag from "../Components/Flag/Flag";
 import Countdown from "../Components/Countdown/Countdown";
@@ -96,7 +96,7 @@ function FlagGame() {
 
   useEffect(() => {
     if (gameReady && availableCountries && availableCountries.length > 0) {
-      prepNextQuestion(state, dispatch);
+      questionHandler(state, dispatch);
       console.log("Preparing next question");
     }
   }, [gameReady]);
@@ -117,7 +117,7 @@ function FlagGame() {
     }
     dispatch({ type: "SET_TIMER_INTERVAL", payload: timer });
     signalTimerReset();
-    prepNextQuestion(state, dispatch);
+    questionHandler(state, dispatch);
   };
 
   const handleCallback = (remainingTime: number) => {
@@ -138,8 +138,8 @@ function FlagGame() {
   };
 
   useEffect(() => {
-    console.warn("Updated state.gameData:", state.gameData);
-  }, [state.gameData]);
+    console.warn("Updated state", gameData, gameDisplay, gameModifiers);
+  }, [state]);
 
   return (
     <>
@@ -173,7 +173,7 @@ function FlagGame() {
           modifiers={content}
           closeModal={closeModal}
           onModifierSelection={(selectedModifier) =>
-            handleModifierSelection(selectedModifier, dispatch)
+            handleModifierSelection(selectedModifier, state, dispatch)
           }
         />
       )}

@@ -30,10 +30,8 @@ export const reconfigAvailability = async <T, S>({
     const availableList = state[availableListKey] as T[];
     const unavailableList = state[unavailableListKey] as T[];
 
-    console.log("Initial availableList:", availableList);
-    console.log("Initial unavailableList:", unavailableList);
-
-    console.log("Object to reconfigure:", objectToReconfig);
+    // console.log("Initial availableList:", availableList);
+    // console.log("Initial unavailableList:", unavailableList);
 
     const newAvailableList = availableList.filter(
       (item: T) => item !== objectToReconfig
@@ -41,12 +39,12 @@ export const reconfigAvailability = async <T, S>({
     // Adds the objectToReconfig to the unavailable list.
     const newUnavailableList = [...unavailableList, objectToReconfig];
 
-    console.log("Updated availableList:", newAvailableList);
-    console.log("Updated unavailableList:", newUnavailableList);
+    // console.log("Updated availableList:", newAvailableList);
+    // console.log("Updated unavailableList:", newUnavailableList);
 
-    console.log(
-      "Dispatching actions to update available and unavailable lists"
-    );
+    // console.log(
+    //   "Dispatching actions to update available and unavailable lists"
+    // );
     const availableActionType = `SET_${String(availableListKey)
       .replace(/([A-Z])/g, "_$1")
       .toUpperCase()}`;
@@ -63,16 +61,7 @@ export const reconfigAvailability = async <T, S>({
       payload: newUnavailableList,
     });
 
-    // Dispatches actions to update the available and unavailable lists in the state.
-    // dispatch({
-    //   type: `SET_AVAILABLE_${String(availableListKey).toUpperCase()}`,
-    //   payload: newAvailableList,
-    // });
-    // dispatch({
-    //   type: `SET_UNAVAILABLE_${String(unavailableListKey).toUpperCase()}`,
-    //   payload: newUnavailableList,
-    // });
-    console.log("state after dispatching actions:", state);
+    // console.log("state after dispatching actions:", state);
   } catch (error) {
     console.error(error);
   }
