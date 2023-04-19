@@ -29,7 +29,7 @@ import {
   addEasternAsia,
   addMicronesia,
   addCentralAsia,
-} from "../modifiers/penalties";
+} from "../Modifiers/penalties";
 import { ReducerState } from "react";
 import { RootState } from "../types/rootInterfaces";
 
@@ -147,7 +147,7 @@ export const testState = {
   gameVariables: {
     multiplier: 1,
     displayedCount: 2,
-    modifierInterval: 2,
+    modifierInterval: 5,
     timer: 5,
   },
   gameData: {

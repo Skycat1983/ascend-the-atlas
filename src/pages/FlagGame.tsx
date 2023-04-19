@@ -1,5 +1,5 @@
 import { useEffect, useReducer, useState } from "react";
-import "@total-typescript/ts-reset";
+// import "@total-typescript/ts-reset";
 import "../App.css";
 import { testState, initialNullState, defaultFetch } from "../Utils/consts";
 import rootReducer from "../reducers/rootReducer";
@@ -64,6 +64,7 @@ function FlagGame() {
     const init = async () => {
       try {
         await setFetch(defaultFetch, dispatch);
+        console.log("Data fetched successfully");
         dispatch({ type: "INITIALISE_STATE", payload: testState });
       } catch (error) {
         console.error("Error in setFetch:", error);
@@ -77,16 +78,16 @@ function FlagGame() {
     if (result && result.length > 0) {
       const calibrate = async () => {
         await setAvailableCountries(state, dispatch);
+        console.log("Countries calibrated");
       };
       calibrate();
     }
     return () => {
       setGameReady(false);
+      console.log("Game set to ready");
     };
   }, [availableRegions]);
 
-  // signal that config is complete. //TODO: use loading state instead.
-  //? maybe loading / !loading can be used for every step ?
   useEffect(() => {
     if (availableCountries && availableCountries.length > 0) {
       setGameReady(true);
@@ -96,27 +97,22 @@ function FlagGame() {
   useEffect(() => {
     if (gameReady && availableCountries && availableCountries.length > 0) {
       prepNextQuestion(state, dispatch);
+      console.log("Preparing next question");
     }
   }, [gameReady]);
 
   const handleClick = async (e: any) => {
-    // console.warn("e.target", e.target);
-    // if (e.target.value === "RESTART") {
-    //   console.log("should be restartiing");
-    //   dispatch({ type: "INITIALISE_STATE", payload: testState });
-    // }
-    // console.log("e>>>", e);
     const validAnswer = await answerHandler(e, state, dispatch);
     if (validAnswer) {
+      console.log("Valid answer");
       if (level % modifierInterval === 0) {
         const getChoice = await modalHandler(state, dispatch);
-        // const configModifiers = await addModifier(getChoice, dispatch);
+        const configModifiers = await addModifier(getChoice, dispatch);
         // const reconfigure = await reconfigAvailability(state, dispatch);
       }
       setButtonText("NEXT");
     } else {
       console.log("invalid answer ");
-      // dispatch({ type: "INITIALISE_STATE", payload: testState });
       setButtonText("RESTART");
     }
     dispatch({ type: "SET_TIMER_INTERVAL", payload: timer });
@@ -140,6 +136,10 @@ function FlagGame() {
   const closeModal = () => {
     dispatch({ type: "CLOSE_MODAL" });
   };
+
+  useEffect(() => {
+    console.warn("Updated state.gameData:", state.gameData);
+  }, [state.gameData]);
 
   return (
     <>

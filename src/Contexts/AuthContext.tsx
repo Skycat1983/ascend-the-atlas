@@ -24,7 +24,6 @@ export const AuthContextProvider = (props: AuthContextProviderProps) => {
         // Signed in
         const user = userCredential.user;
         // console.log("user", user);
-        // ...
       })
       .catch((error) => {
         const errorCode = error.code;
@@ -75,7 +74,7 @@ export const AuthContextProvider = (props: AuthContextProviderProps) => {
     checkForCurrentUser();
   }, []);
 
-  console.log("current user:", user);
+  // console.log("current user:", user);
   return (
     <AuthContext.Provider value={{ user, logIn, logOut, signUp }}>
       {props.children}

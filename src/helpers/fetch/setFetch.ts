@@ -13,7 +13,7 @@ type ActionType = SetFetchResultAction | SetErrorsAction;
 
 type DispatchType = (action: ActionType) => void;
 
-// ": obj is FetchState {" is a type guard/predicate
+// type guard/predicate
 function isCountryArray(obj: unknown): obj is Country[] {
   // Check if the object is an array and if every element in the array is a non-null object
   return (

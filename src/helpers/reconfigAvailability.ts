@@ -1,9 +1,9 @@
-import {
-  RootState,
-  AppDispatch,
-  DynamicReconfig,
-} from "../types/rootInterfaces";
+import { DynamicReconfig } from "../types/rootInterfaces";
 
+// This function reconfigures the availability of an object (e.g., country, region)
+// in the available and unavailable lists in the state.
+// It takes a configuration object with the state, dispatch, objectToReconfig,
+// availableListKey, and unavailableListKey as properties.
 export const reconfigAvailability = async <T, S>({
   state,
   dispatch,
@@ -26,76 +26,54 @@ export const reconfigAvailability = async <T, S>({
       );
     }
 
-    // this function should filter the object out of the available list and add it to the unavailable list
-
+    // Filters the objectToReconfig out of the available list.
     const availableList = state[availableListKey] as T[];
     const unavailableList = state[unavailableListKey] as T[];
+
+    console.log("Initial availableList:", availableList);
+    console.log("Initial unavailableList:", unavailableList);
+
+    console.log("Object to reconfigure:", objectToReconfig);
 
     const newAvailableList = availableList.filter(
       (item: T) => item !== objectToReconfig
     );
-
+    // Adds the objectToReconfig to the unavailable list.
     const newUnavailableList = [...unavailableList, objectToReconfig];
+
+    console.log("Updated availableList:", newAvailableList);
+    console.log("Updated unavailableList:", newUnavailableList);
+
+    console.log(
+      "Dispatching actions to update available and unavailable lists"
+    );
+    const availableActionType = `SET_${String(availableListKey)
+      .replace(/([A-Z])/g, "_$1")
+      .toUpperCase()}`;
+    const unavailableActionType = `SET_${String(unavailableListKey)
+      .replace(/([A-Z])/g, "_$1")
+      .toUpperCase()}`;
+
     dispatch({
-      type: `SET_AVAILABLE_${String(availableListKey).toUpperCase()}`,
+      type: availableActionType,
       payload: newAvailableList,
     });
     dispatch({
-      type: `SET_UNAVAILABLE_${String(unavailableListKey).toUpperCase()}`,
+      type: unavailableActionType,
       payload: newUnavailableList,
     });
+
+    // Dispatches actions to update the available and unavailable lists in the state.
+    // dispatch({
+    //   type: `SET_AVAILABLE_${String(availableListKey).toUpperCase()}`,
+    //   payload: newAvailableList,
+    // });
+    // dispatch({
+    //   type: `SET_UNAVAILABLE_${String(unavailableListKey).toUpperCase()}`,
+    //   payload: newUnavailableList,
+    // });
+    console.log("state after dispatching actions:", state);
   } catch (error) {
     console.error(error);
   }
 };
-
-// we need to run over what <T> is doing slowly and from the beginning. in this code below, what does T mean?
-
-// export type ReconfigAvailabilityParams<T> = {
-//   state: RootState;
-//   dispatch: (action: ReconfigAction<T>) => void;
-//   objectToReconfig: T;
-//   availableListKey: keyof RootState;
-//   unavailableListKey: keyof RootState;
-// };
-
-// what about in this code too ?
-
-//   export type ReconfigAction<T> = {
-//   type: string;
-//   payload: T[];
-// };
-
-//?
-
-//!-------
-// we might want to shift avaialbility of country, region or modifier from available to unavailable
-// export const reconfigAvailability = (
-//   state: any,
-//   dispatch: any
-// ): Promise<void> => {
-//   return new Promise((resolve) => {
-//     // this function will remove the displayed country from the available countries and add it to the unavailable countries.
-//     const { displayedCountry } = state.gameDisplay;
-//     const { availableCountries, unavailableCountries } = state.gameData;
-
-//     // remove the displayed country from the available countries
-//     const newAvailableCountries = availableCountries.filter(
-//       (country: any) => country.name !== displayedCountry.name
-//     );
-//     // console.log("newAvailableCountries :>> ", newAvailableCountries);
-
-//     // add the displayed country to the unavailable countries
-//     const newUnavailableCountries = [...unavailableCountries, displayedCountry];
-
-//     dispatch({
-//       type: "SET_AVAILABLE_COUNTRIES",
-//       payload: newAvailableCountries,
-//     });
-//     dispatch({
-//       type: "SET_UNAVAILABLE_COUNTRIES",
-//       payload: newUnavailableCountries,
-//     });
-//     resolve();
-//   });
-// };

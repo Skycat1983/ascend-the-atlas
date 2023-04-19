@@ -1,6 +1,6 @@
 import { Modifier, ModifiersAction } from "../../types/modifierTypes";
 
-export const addModifier = (
+export const addModifier = async (
   selectedModifier: Modifier,
   dispatch: (action: ModifiersAction) => void
 ) => {

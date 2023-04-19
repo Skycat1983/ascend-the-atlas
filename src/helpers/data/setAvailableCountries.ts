@@ -26,6 +26,9 @@ export const setAvailableCountries = (
         }
       }
 
+      console.log(
+        "Dispatching SET_AVAILABLE_COUNTRIES from setAvailableCountries"
+      ); // Add this line
       dispatch({
         type: "SET_AVAILABLE_COUNTRIES",
         payload: availableCountries,

@@ -23,10 +23,12 @@ export const configHandler = (state: any, dispatch: any): Promise<void> => {
 
     // dispatch action to update the state
 
+    console.log("Dispatching SET_AVAILABLE_COUNTRIES from configHandler");
     dispatch({
       type: "SET_AVAILABLE_COUNTRIES",
       payload: newAvailableCountries,
     });
+    console.log("Dispatching SET_UNAVAILABLE_COUNTRIES from configHandler");
     dispatch({
       type: "SET_UNAVAILABLE_COUNTRIES",
       payload: newUnavailableCountries,

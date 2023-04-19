@@ -1,9 +1,4 @@
-import {
-  RootState,
-  AppDispatch,
-  DynamicReconfig,
-  Country,
-} from "../types/rootInterfaces";
+import { RootState, AppDispatch, Country } from "../types/rootInterfaces";
 import { setDisplayedOptions } from "../helpers/display/setDisplayedOptions";
 import { setDisplayedCountry } from "../helpers/display/setDisplayedCountry";
 import { reconfigAvailability } from "../helpers/reconfigAvailability";
@@ -14,17 +9,10 @@ export const prepNextQuestion = async (
   dispatch: AppDispatch
 ): Promise<void> => {
   const { gameData } = state;
+  console.log("gameData in prepNextQuestion:", gameData);
+
   try {
-    // console.log(
-    //   "Before setDisplayedOptions:",
-    //   state.gameDisplay.displayedOptions
-    // );
     const getDisplayOptions = await setDisplayedOptions(state, dispatch);
-    // console.log("After setDisplayedOptions:", getDisplayOptions);
-    // console.log(
-    //   "Before setDisplayedCountry:",
-    //   state.gameDisplay.displayedCountry
-    // );
     const getDisplayCountry = await setDisplayedCountry(
       {
         ...state,
@@ -36,7 +24,6 @@ export const prepNextQuestion = async (
       dispatch
     );
     console.log("After setDisplayedCountry:", getDisplayCountry);
-    // console.log("pass");
     await reconfigAvailability<Country, DataState>({
       state: gameData,
       dispatch,
@@ -44,17 +31,6 @@ export const prepNextQuestion = async (
       availableListKey: "availableCountries",
       unavailableListKey: "unavailableCountries",
     });
-
-    // await reconfigAvailability(
-    //   {
-    //     ...state,
-    //     gameDisplay: {
-    //       ...state.gameDisplay,
-    //       displayedCountry: getDisplayCountry,
-    //     },
-    //   },
-    //   dispatch
-    // );
   } catch (error) {
     console.error("Error in prepNextQuestion:", error);
     // todo: handle error
