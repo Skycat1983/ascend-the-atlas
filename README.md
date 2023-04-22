@@ -1,4 +1,4 @@
-Ascend The Atlas, a geography based roguelike game that is nowhere near finished, but has a working shell.
+Ascend The Atlas, an unfinished, geography-based roguelike game.
 
 This project is a geography guessing game with roguelike elements, where players are presented with multiple-choice questions about countries and have to guess the correct answer.
 
@@ -9,7 +9,7 @@ Roguelike elements such as level progression, perks/penalties/modifiers, and a t
 Dynamic scaling difficulty adjustment based on player performance
 Customizable gameplay settings
 
-NOTE: currently reworking and expanding how penalties are applied to ensure greater structural consistency. Best features currently unavailable. Do not play until i get this finished.
+NOTE: currently reworking and expanding how penalty states are managed so some features are currently unavailable. It's probably best not play until i get this finished.
 
 the game was built using a modular and scalable architecture, leveraging React for the user currently-non-existent interface and a series of custom reducers for local state management. The design choices were made to ensure that the codebase remains maintainable, testable, and easily extensible.
 
